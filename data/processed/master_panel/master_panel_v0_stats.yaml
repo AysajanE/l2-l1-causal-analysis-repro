@@ -1,0 +1,252 @@
+date_range: !!python/tuple
+- !!python/object/apply:pandas._libs.tslibs.timestamps._unpickle_timestamp
+  - 1438905600000000000
+  - null
+  - &id001 !!python/object/apply:pytz._UTC []
+  - 10
+- !!python/object/apply:pandas._libs.tslibs.timestamps._unpickle_timestamp
+  - 1735603200000000000
+  - null
+  - *id001
+  - 10
+metric_availability:
+  A_t:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - &id002 !!python/object/apply:numpy.dtype
+      args:
+      - i8
+      - false
+      - true
+      state: !!python/tuple
+      - 3
+      - <
+      - null
+      - null
+      - null
+      - -1
+      - -1
+      - 0
+    - !!binary |
+      tQUAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - &id003 !!python/object/apply:numpy.dtype
+      args:
+      - f8
+      - false
+      - true
+      state: !!python/tuple
+      - 3
+      - <
+      - null
+      - null
+      - null
+      - -1
+      - -1
+      - 0
+    - !!binary |
+      HpNe4ZA42z8=
+  C_fee:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      3AQAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      9U0+NIkt1z8=
+  G_eff:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      hAQAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      Lv/g38yJ1T8=
+  P_calldata_bytes:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      IgMAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      IDN26qLizT8=
+  S_t:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      3AQAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      9U0+NIkt1z8=
+  eth_close_usd:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      1wgAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      V9ZMK/EU5T8=
+  u_t:
+    count: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id002
+    - !!binary |
+      AAAAAAAAAAA=
+    coverage: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id003
+    - !!binary |
+      AAAAAAAAAAA=
+regime_coverage:
+  post_dencun: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id002
+  - !!binary |
+    JgEAAAAAAAA=
+  post_london: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id002
+  - !!binary |
+    lgEAAAAAAAA=
+  post_merge: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id002
+  - !!binary |
+    IQIAAAAAAAA=
+  pre_london: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id002
+  - !!binary |
+    jggAAAAAAAA=
+summary_stats:
+  A_arbitrum:
+    max: 0.7031246732298034
+    mean: 0.1945700605347879
+    median: 0.21477782976000345
+    min: 0.0
+    std: 0.15816745404309276
+  A_base:
+    max: 0.7911484142167352
+    mean: 0.11263570704948471
+    median: 0.0
+    min: 0.0
+    std: 0.18676197143714415
+  A_optimism:
+    max: 0.3303212947338851
+    mean: 0.07770573838866386
+    median: 0.07769492992488382
+    min: 0.0
+    std: 0.06382291243482961
+  A_t:
+    max: 1.0
+    mean: 0.4223729070636076
+    median: 0.49652752582057424
+    min: 0.0
+    std: 0.3359587785862214
+  C_fee:
+    max: 5.260788523345707
+    mean: 2.980978170762613
+    median: 2.9884412286253412
+    min: -0.41373616872017793
+    std: 1.0243588213413388
+  G_eff:
+    max: 27.568707672220057
+    mean: 24.023926490176358
+    median: 23.866399304965086
+    min: 22.811707568386808
+    std: 0.5547701397297672
+  P_calldata_bytes:
+    max: 1092146816.0
+    mean: 230410338.8054863
+    median: 188428026.5
+    min: 4524678.0
+    std: 194316229.82644954
+  P_calldata_mb:
+    max: 1041.5523681640625
+    mean: 219.7364223532546
+    median: 179.69896936416626
+    min: 4.315069198608398
+    std: 185.31439764637904
+  S_t:
+    max: 5.260788523345707
+    mean: 2.980978170762613
+    median: 2.9884412286253412
+    min: -0.41373616872017793
+    std: 1.0243588213413388
+  arbitrum_tx_count:
+    max: 5419769.0
+    mean: 837053.0691307323
+    median: 632698.0
+    min: 0.0
+    std: 879714.5290842016
+  base_fee_gwei:
+    max: 192.633327301
+    mean: 31.40122312128216
+    median: 19.854825958
+    min: 0.661175366
+    std: 31.842708383839206
+  base_tx_count:
+    max: 11447083.0
+    mean: 971299.5523613963
+    median: 0.0
+    min: 0.0
+    std: 2015006.5103457079
+  day_of_month:
+    max: 31.0
+    mean: 15.757205240174672
+    median: 16.0
+    min: 1.0
+    std: 8.79669931299428
+  eth_close_usd:
+    max: 4812.087402
+    mean: 1248.9704413999118
+    median: 1039.099976
+    min: 84.308296
+    std: 1118.5660805025113
+  eth_price_log:
+    max: 8.478886240271263
+    mean: 6.60427732666272
+    median: 6.94611020976169
+    min: 4.434480270604729
+    std: 1.1229121604691017
+  eth_return_1d:
+    max: 0.2645807082093463
+    mean: 0.0020657298180418782
+    median: 0.000776781937516402
+    min: -0.42347221483119923
+    std: 0.047245956539968756
+  eth_return_1d_log:
+    max: 0.23474061127482418
+    mean: 0.0009369956825452827
+    median: 0.0007867910220808233
+    min: -0.5507317441312175
+    std: 0.047916480406956674
+  eth_volatility_30d:
+    max: 2.106122991148287
+    mean: 0.8365772612910674
+    median: 0.7939204474558152
+    min: 0.15396178808503053
+    std: 0.33257869407373636
+  gas_price_gwei:
+    max: 939588332579.0
+    mean: 33877463182.551903
+    median: 23176377030.5
+    min: 8072326506.0
+    std: 46600446827.40739
+  l1_tx_count:
+    max: 1961144.0
+    mean: 1151231.455852156
+    median: 1145960.0
+    min: 0.0
+    std: 126995.0270029813
+  l2_tx_total:
+    max: 15569345.0
+    mean: 2342995.317590691
+    median: 1014409.0
+    min: 0.0
+    std: 3254637.3680721456
+  optimism_tx_count:
+    max: 1199047.0
+    mean: 295833.0636550308
+    median: 257793.0
+    min: 0.0
+    std: 284551.3057573792
+total_days: 3435

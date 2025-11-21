@@ -1,0 +1,320 @@
+# Legacy Data Mapping Configuration
+# Maps legacy CSV files to canonical table schemas
+# Used by ingest_legacy.py for data reconciliation
+
+version: "1.0"
+created: "2025-09-16"
+description: "Mapping configuration for reconciling Ali's completed work with v1 data collection plan"
+
+# Chain name standardization
+chain_mappings:
+  arbitrum: "arbitrum"
+  optimism: "optimism"
+  op_mainnet_pre_bedrock: "optimism"
+  op_mainnet: "optimism"
+  base: "base"
+  zksync: "zksync"
+  zksync_era: "zksync"
+  starknet: "starknet"
+
+# Date parsing configuration
+date_config:
+  default_format: "%Y-%m-%d"
+  timezone: "UTC"
+  alternative_formats:
+    - "%m/%d/%Y"
+    - "%d/%m/%Y"
+    - "%Y%m%d"
+
+# Legacy file mappings
+legacy_mappings:
+
+  # ===== L1 DAILY METRICS =====
+
+  l1_daily_transactions:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Counts total Ethereum L1 transactions per day.csv"
+        columns:
+          date: "date"
+          l1_tx_count: "l1_tx_count"
+        dtypes:
+          date: "datetime64[ns]"
+          l1_tx_count: "int64"
+        notes: "Daily L1 transaction counts - primary metric for denominator in adoption ratio"
+
+  l1_daily_blocks:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Calculates total gas used per day from Ethereum L1 blocks.csv"
+        columns:
+          date: "date"
+          total_gas_used: "gas_used"
+        dtypes:
+          date: "datetime64[ns]"
+          total_gas_used: "int64"
+        notes: "Daily gas consumption - outcome metric for utilization"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Calculates daily median base_fee_per_gas.csv"
+        columns:
+          date: "date"
+          median_base_fee_gwei: "base_fee_gwei"
+        dtypes:
+          date: "datetime64[ns]"
+          median_base_fee_gwei: "float64"
+        notes: "Post-London base fee - primary congestion outcome (null pre-2021-08-05)"
+        null_before: "2021-08-05"  # London hard fork
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Calculates average block time per day on Ethereum.csv"
+        columns:
+          date: "date"
+          avg_block_time_seconds: "block_time_seconds"
+        dtypes:
+          date: "datetime64[ns]"
+          avg_block_time_seconds: "float64"
+        notes: "Average block interval - diagnostic metric"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Project */Main File */EthereumGasLimitHistory.csv"
+        columns:
+          "Date(UTC)": "date"
+          "Value": "gas_limit"
+        dtypes:
+          date: "datetime64[ns]"
+          gas_limit: "int64"
+        notes: "Daily gas limit - denominator for utilization calculation"
+        date_format: "%m/%d/%Y"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Project */Main File */EthereumGasPriceHistory.csv"
+        columns:
+          "Date(UTC)": "date"
+          "Value": "gas_price_gwei"
+        dtypes:
+          date: "datetime64[ns]"
+          gas_price_gwei: "float64"
+        notes: "Pre-London gas price proxy for scarcity index"
+        date_format: "%m/%d/%Y"
+
+  # ===== L2 ACTIVITY METRICS =====
+
+  l2_daily_metrics:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Data Sources & Collection Guidance for Missing Metrics/l2_tx_count_2022_2024.csv"
+        columns:
+          day: "date"
+          chain: "chain"
+          tx_count: "tx_count"
+        dtypes:
+          date: "datetime64[ns]"
+          chain: "string"
+          tx_count: "int64"
+        chain_map: true
+        notes: "Comprehensive L2 transaction counts 2022-2024"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/l2_tx_count_arbitrum.csv"
+        columns:
+          date: "date"
+          arbitrum_tx_count: "tx_count"
+        dtypes:
+          date: "datetime64[ns]"
+          tx_count: "int64"
+        add_chain: "arbitrum"
+        notes: "Arbitrum-specific transaction counts"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/l2_tx_count_optimism.csv"
+        columns:
+          date: "date"
+          optimism_tx_count: "tx_count"
+        dtypes:
+          date: "datetime64[ns]"
+          tx_count: "int64"
+        add_chain: "optimism"
+        notes: "Optimism-specific transaction counts"
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Data Sources & Collection Guidance for Missing Metrics/L2 Active Users.csv"
+        columns:
+          day: "date"
+          chain: "chain"
+          dau: "active_addr"
+        dtypes:
+          date: "datetime64[ns]"
+          chain: "string"
+          active_addr: "int64"
+        chain_map: true
+        notes: "Daily active addresses per L2 chain"
+
+  # ===== MEDIATOR METRICS (PRE-DENCUN) =====
+
+  mediator_pre_dencun_calldata:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Data Sources & Collection Guidance for Missing Metrics/L2_Calldata_Size_merged.csv"
+        columns:
+          day: "date"
+          chain: "chain"
+          calldata_bytes: "calldata_bytes"
+        dtypes:
+          date: "datetime64[ns]"
+          chain: "string"
+          calldata_bytes: "int64"
+        chain_map: true
+        notes: "Calldata posting size by L2 - mediator variable pre-Dencun"
+        null_after: "2024-03-13"  # Dencun upgrade
+
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Project */additional resources/L2 Calldata Size from L2 → L1.csv"
+        columns:
+          date: "date"
+          calldata_kb: "calldata_kb"
+        dtypes:
+          date: "datetime64[ns]"
+          calldata_kb: "float64"
+        transform:
+          calldata_bytes: "calldata_kb * 1024"  # Convert KB to bytes
+        notes: "Alternative calldata size metric - check for consistency"
+
+  # ===== CONTROL VARIABLES =====
+
+  controls_price:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Project */Main File */eth price */ETH-USD (2017-2024).csv"
+        columns:
+          Date: "date"
+          Close: "eth_close_usd"
+          Open: "eth_open_usd"
+          High: "eth_high_usd"
+          Low: "eth_low_usd"
+          Volume: "eth_volume_usd"
+        dtypes:
+          date: "datetime64[ns]"
+          eth_close_usd: "float64"
+          eth_open_usd: "float64"
+          eth_high_usd: "float64"
+          eth_low_usd: "float64"
+          eth_volume_usd: "float64"
+        notes: "Primary ETH/USD price data - canonical source for control variables"
+        date_format: "%Y-%m-%d"
+
+  # ===== OPTIONAL MEMPOOL DATA =====
+
+  mempool_optional:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Data Sources & Collection Guidance for Missing Metrics/1. L1 Pending Transactions & Mempool Size (1).csv"
+        columns:
+          date: "date"
+          pending_tx_avg: "pending_tx_avg"
+          pending_tx_median: "pending_tx_median"
+          mempool_size_avg: "mempool_size_avg"
+          mempool_size_median: "mempool_size_median"
+          minutes_covered: "minutes_covered"
+        dtypes:
+          date: "datetime64[ns]"
+          pending_tx_avg: "float64"
+          pending_tx_median: "float64"
+          mempool_size_avg: "float64"
+          mempool_size_median: "float64"
+          minutes_covered: "float64"
+        notes: "Mempool pressure metrics - optional validation for congestion proxies"
+
+  # ===== CROSS-CHECK DATA (not primary sources) =====
+
+  legacy_engineered_panel:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/Engineered_Metrics_Panel.csv"
+        columns:
+          date: "date"
+          l1_tx_count: "l1_tx_count"
+          optimism_tx_count: "optimism_tx_count"
+          arbitrum_tx_count: "arbitrum_tx_count"
+          l2_total_tx: "l2_total_tx"
+          l2_l1_tx_ratio: "l2_l1_tx_ratio"
+          gas_per_tx: "gas_per_tx"
+          base_fee_index: "base_fee_index"
+          l2_growth_rate: "l2_growth_rate"
+          block_time_avg: "block_time_avg"
+        dtypes:
+          date: "datetime64[ns]"
+          l1_tx_count: "int64"
+          optimism_tx_count: "int64"
+          arbitrum_tx_count: "int64"
+          l2_total_tx: "int64"
+          l2_l1_tx_ratio: "float64"
+          gas_per_tx: "float64"
+          base_fee_index: "float64"
+          l2_growth_rate: "float64"
+          block_time_avg: "float64"
+        use_for: "cross_validation"
+        notes: "Pre-computed engineered metrics - use for QA cross-checks only"
+
+  legacy_master_panel:
+    source_files:
+      - glob: "L1-L2-causal-influence-analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/Ali Completed Work/vw_master_daily_panel.csv"
+        columns:
+          date: "date"
+          l1_tx_count: "l1_tx_count"
+          l1_gas_used: "l1_gas_used"
+          base_fee_gwei: "base_fee_gwei"
+          arbitrum_tx_count: "arbitrum_tx_count"
+          optimism_tx_count: "optimism_tx_count"
+        dtypes:
+          date: "datetime64[ns]"
+          l1_tx_count: "int64"
+          l1_gas_used: "int64"
+          base_fee_gwei: "float64"
+          arbitrum_tx_count: "int64"
+          optimism_tx_count: "int64"
+        use_for: "cross_validation"
+        notes: "Alternative master panel - use for consistency checks"
+
+# Quality assurance rules
+qa_rules:
+  required_date_range:
+    start: "2021-01-01"
+    end: "2024-12-31"
+
+  regime_constraints:
+    london_fork: "2021-08-05"  # base_fee_gwei should be null before this
+    merge: "2022-09-15"        # difficulty should drop to zero after this
+    dencun: "2024-03-13"       # blob metrics start here
+
+  validation_checks:
+    - name: "non_negative_counts"
+      columns: ["l1_tx_count", "tx_count", "active_addr", "calldata_bytes"]
+      rule: ">= 0"
+    - name: "reasonable_utilization"
+      expression: "gas_used / gas_limit"
+      rule: "between 0 and 1.5"  # Allow for burst capacity
+    - name: "positive_prices"
+      columns: ["base_fee_gwei", "eth_close_usd", "gas_price_gwei"]
+      rule: "> 0"
+      allow_null: true  # For regime constraints
+
+# Output specifications
+output_config:
+  intermediate_format: "parquet"
+  intermediate_path: "data/intermediate/{table}.parquet"
+
+  processed_format: "parquet"
+  processed_path: "data/processed/{table}.parquet"
+
+  metadata_path: "data/metadata/"
+
+  compression: "snappy"
+
+  preview_rows: 100  # Generate CSV preview with this many rows
+
+# Provenance tracking
+provenance:
+  track_checksums: true
+  checksum_algorithm: "sha256"
+  log_file: "data/metadata/provenance_log.md"
+
+  required_metadata:
+    - source_file_path
+    - file_size_bytes
+    - row_count_input
+    - row_count_output
+    - date_range
+    - processing_timestamp
+    - git_commit_hash
+
+# Documentation
+docs:
+  reconciliation_log: "docs/data_reconciliation_log.md"
+  gap_analysis: "results/reports/data_gaps.md"
+  qa_report: "results/reports/qa_report.md"

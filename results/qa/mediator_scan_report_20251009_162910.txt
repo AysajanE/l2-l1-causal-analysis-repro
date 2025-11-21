@@ -1,0 +1,47 @@
+================================================================================
+MEDIATOR EXCLUSION SCAN REPORT
+================================================================================
+Scan timestamp: 2025-10-09T16:29:10.122584
+Files scanned: 1
+
+SUMMARY
+----------------------------------------
+Critical violations: 5
+Warnings: 0
+Info messages: 0
+LEAKAGE DETECTED: YES - BLOCKING
+
+CRITICAL VIOLATIONS (Must Fix)
+----------------------------------------
+File: 05_descriptive.py, Line: 924
+  Mediator: p_blob
+  Context: FORBIDDEN: controls
+  Code: report.append("- Never include P_calldata or P_blob as controls")
+
+File: 05_descriptive.py, Line: 924
+  Mediator: P_blob
+  Context: FORBIDDEN: controls
+  Code: report.append("- Never include P_calldata or P_blob as controls")
+
+File: 05_descriptive.py, Line: 924
+  Mediator: p_calldata
+  Context: FORBIDDEN: controls
+  Code: report.append("- Never include P_calldata or P_blob as controls")
+
+File: 05_descriptive.py, Line: 924
+  Mediator: P_calldata
+  Context: FORBIDDEN: controls
+  Code: report.append("- Never include P_calldata or P_blob as controls")
+
+File: 05_descriptive.py, Line: 924
+  Mediator: [Pp]_(?:calldata|blob)
+  Context: FORBIDDEN: controls
+  Code: report.append("- Never include P_calldata or P_blob as controls")
+
+RECOMMENDATIONS
+----------------------------------------
+⚠️  CRITICAL: Mediator leakage detected!
+1. Remove all mediator variables from total effect models
+2. Mediators can only appear in mediation analysis
+3. Re-run this scanner after fixes
+4. Gate G3 will remain FAILED until resolved

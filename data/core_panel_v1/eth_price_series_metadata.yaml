@@ -1,0 +1,28 @@
+columns:
+- date
+- eth_price_usd
+- is_interpolated
+- eth_price_usd_7d_ma
+- eth_price_usd_30d_ma
+- eth_price_volatility_7d
+- eth_price_usd_lower_95
+- eth_price_usd_upper_95
+- regime_post_london
+- regime_post_merge
+- regime_post_dencun
+data_source: core_panel_v1_converted.parquet
+date_range:
+  days: 3435
+  end: '2024-12-31'
+  start: '2015-08-07'
+generated_at: '2025-10-10T07:30:41.589823'
+interpolation:
+  interpolated_days: 827
+  method: time-based linear
+pipeline_version: 1.0.0
+price_statistics:
+  max: 4812.087402
+  mean: 1205.136274850737
+  median: 462.436005
+  min: 84.308296
+  std: 1184.2764236084802

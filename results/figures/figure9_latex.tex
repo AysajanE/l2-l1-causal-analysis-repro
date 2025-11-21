@@ -1,0 +1,31 @@
+% Figure 9: BSTS Counterfactual Analysis
+% Include this snippet in the manuscript at the appropriate location
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure9_bsts_counterfactual.pdf}
+    \caption{\textbf{BSTS Counterfactual Analysis - Low L2 Adoption Scenario.}
+    \textit{Panel A}: Observed vs counterfactual L1 congestion paths with 95\% credible intervals. The counterfactual scenario fixes L2 activity ($A_t$) at its 10th percentile value (0.0464).
+    \textit{Panel B}: Treatment effect over time ($\Delta_t = Y_{obs} - Y_{counterfactual}$), showing the reduction in L1 congestion attributable to actual L2 adoption. Negative values indicate lower congestion due to L2 scaling. Green shading indicates periods where $P(\Delta_t < 0) > 0.95$.
+    \textit{Panel C}: Cumulative savings in log scale (left axis) and Gwei (right axis), demonstrating the total impact of L2 adoption on reducing L1 congestion.
+    Colored vertical bands indicate different protocol regimes: London-Merge (blue), Merge-Dencun (green), and post-Dencun (orange). Vertical dashed lines mark major protocol upgrades.}
+    \label{fig:bsts_counterfactual}
+\end{figure}
+
+% Alternative for two-column format
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/figure9_bsts_counterfactual.pdf}
+    \caption{\textbf{BSTS Counterfactual Analysis - Low L2 Adoption Scenario.}
+    \textit{Panel A}: Observed vs counterfactual L1 congestion paths with 95\% credible intervals. The counterfactual scenario fixes L2 activity ($A_t$) at its 10th percentile value (0.0464).
+    \textit{Panel B}: Treatment effect over time ($\Delta_t = Y_{obs} - Y_{counterfactual}$), showing the reduction in L1 congestion attributable to actual L2 adoption. Negative values indicate lower congestion due to L2 scaling. Green shading indicates periods where $P(\Delta_t < 0) > 0.95$.
+    \textit{Panel C}: Cumulative savings in log scale (left axis) and Gwei (right axis), demonstrating the total impact of L2 adoption on reducing L1 congestion.
+    Colored vertical bands indicate different protocol regimes: London-Merge (blue), Merge-Dencun (green), and post-Dencun (orange). Vertical dashed lines mark major protocol upgrades.}
+    \label{fig:bsts_counterfactual_wide}
+\end{figure*}
+
+% Summary statistics to include in text
+% Average Treatment Effect: -4.4230 (log scale)
+% Cumulative Effect: -791.7082 (log scale)
+% Periods with significant effect: 176/179 (98.3\%)
+% Low-L2 scenario: A_t = 0.0464 (10th percentile)

@@ -1,0 +1,24 @@
+{
+  "title": "L1–L2 Causal Influence Analysis (Reproducibility Package)",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "mit",
+  "language": "eng",
+  "version": "v1.0.2",
+  "description": "Reproducibility bundle for the study on the causal influence of Layer-2 scaling solutions on Ethereum Layer-1 congestion. Includes small derived datasets and pointers to Zenodo-hosted raw/heavy artifacts.",
+  "creators": [
+    {
+      "name": "Eziz, Aysajan",
+      "orcid": "0000-0002-3275-2333",
+      "affiliation": "Ivey Business School"
+    }
+  ],
+  "keywords": ["Ethereum", "Layer 2", "causal inference", "blockchain economics"],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://doi.org/10.5281/zenodo.17665906",
+      "resource_type": "dataset"
+    }
+  ]
+}

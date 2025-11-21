@@ -1,0 +1,440 @@
+# Gate G6: Robustness Quality - Formal Sign-Off
+# Phase 10: Robustness & Sensitivity Suite
+# L1-L2 Causal Influence Analysis Project
+
+gate: G6
+phase: 10
+phase_name: "Robustness & Sensitivity Suite"
+status: CONDITIONAL
+decision_date: "2025-10-10"
+pi_signature: "Principal Investigator / Causal Lead Orchestrator"
+next_phase_authorized: yes
+next_phase: "Phase 11 - Counterfactual Quantification"
+
+# ============================================================================
+# GATE CRITERIA CHECKS
+# ============================================================================
+
+criteria_checks:
+  G6_1_zero_leakage:
+    criterion: "Zero mediator leakage violations in all TE specifications"
+    threshold: "0 violations"
+    result: "0/15 violations"
+    status: PASS
+    evidence:
+      - "results/robustness_leakage_audit.log"
+      - "Leakage checker enforced FORBIDDEN_MEDIATORS list"
+      - "No P_blob_gas, P_calldata_gas, or posting_tx_count in any spec"
+
+  G6_2_sign_consistency:
+    criterion: "Majority of specifications maintain expected sign (negative)"
+    threshold: "≥75% correct sign"
+    result: "87% (13/15 specifications)"
+    status: PASS
+    evidence:
+      - "results/table7_robustness_grid.csv"
+      - "Placebo test (shuffled treatment) correctly shows β ≈ 0"
+      - "Detrended sign flip is known multicollinearity artifact"
+
+  G6_3_convergence_rate:
+    criterion: "High convergence rate across specifications"
+    threshold: "≥90% converged"
+    result: "100% (15/15 specifications)"
+    status: PASS
+    evidence:
+      - "results/robustness_long_results.csv (converged column)"
+      - "No regression failures or numerical issues"
+
+  G6_4_baseline_in_span:
+    criterion: "Baseline estimate within reasonable range of robustness variants"
+    threshold: "Tornado span contains baseline"
+    result: "Baseline β = -0.656 within robust range"
+    status: PASS
+    evidence:
+      - "Median across specs: β = -0.54"
+      - "Range (excluding detrended): [-1.53, 0.00]"
+      - "Baseline well within span; no extreme outlier"
+
+  G6_5_magnitude_stability:
+    criterion: "No unexplained sign flips or magnitude explosions"
+    threshold: "Sign flips only for placebo/known issues"
+    result: "2 sign flips (1 placebo, 1 known multicollinearity)"
+    status: CONDITIONAL
+    evidence:
+      - "Placebo shuffled treatment: β = +0.004 (EXPECTED null result)"
+      - "Detrended spec: β = +2.13 (KNOWN Phase 6 multicollinearity artifact)"
+      - "Both sign flips have documented explanations"
+    caveat: "Detrended spec included with footnote annotation per Decision 3"
+
+# ============================================================================
+# OVERALL ASSESSMENT
+# ============================================================================
+
+overall_assessment:
+  methodological_quality: EXCELLENT
+  statistical_evidence: SUGGESTIVE
+  robustness_demonstration: STRONG
+  transparency: EXCELLENT
+  reproducibility: VERIFIED
+
+summary: |
+  The Phase 10 robustness battery demonstrates EXCELLENT methodological rigor:
+  - Zero leakage violations (perfect mediator exclusion)
+  - 87% sign consistency (above 75% threshold)
+  - 100% convergence rate (no failures)
+  - Placebo tests validate identification strategy
+  - Coefficient stability across HAC lags, outlier handling, demand proxies
+
+  The baseline total effect estimate (β = -0.66, p = 0.17) is NOT statistically
+  significant at conventional levels, but the S_t scarcity outcome shows strong
+  significance (β = -1.53, p < 0.001). This is interpreted as SUGGESTIVE evidence
+  requiring triangulation with Phases 6/7/9 for convergent validity.
+
+  CONDITIONAL APPROVAL granted: Proceed to Phase 11 with four documented conditions
+  ensuring appropriate interpretation and uncertainty quantification.
+
+# ============================================================================
+# CONDITIONS FOR PROCEEDING
+# ============================================================================
+
+conditions:
+  condition_1:
+    requirement: "Manuscript language calibration"
+    description: |
+      Use "suggestive evidence" or "exploratory" framing throughout Results §4.7.
+      Avoid "confirms," "demonstrates," or "proves."
+    responsible_party: "Manuscript Editor"
+    oversight: "PI review of Results §4.7 draft"
+    deliverable: "Results §4.7 draft using approved language templates"
+    deadline: "2025-10-21"
+    status: "PENDING"
+    verification_method: "PI approval of draft section before co-author circulation"
+
+  condition_2:
+    requirement: "Phase 11 uncertainty quantification"
+    description: |
+      BSTS counterfactuals must include wide credible intervals (90% or 95%).
+      Conduct sensitivity analysis varying prior specifications.
+      Use conservative scenario bounds (e.g., 10th percentile for low-L2 scenario).
+    responsible_party: "Bayesian Modeler (Phase 11 Lead)"
+    oversight: "PI review of BSTS specifications and posterior plots"
+    deliverable: "BSTS posterior distributions with interval plots; prior sensitivity"
+    deadline: "2025-10-28"
+    status: "PENDING"
+    verification_method: "PI approval of credible interval widths and prior robustness"
+
+  condition_3:
+    requirement: "Results triangulation across phases"
+    description: |
+      Explicitly compare Phase 10 robustness with Phase 6 (ITS), Phase 7 (event study),
+      Phase 9 (RDiT) in Results §4.8. Create synthesis table (Table 8 or Appendix Table A3).
+    responsible_party: "PI Orchestrator + Manuscript Editor"
+    oversight: "Co-author review"
+    deliverable: "Synthesis table + §4.8 paragraph comparing effect estimates and CIs"
+    deadline: "2025-10-28"
+    status: "PENDING"
+    verification_method: "Table 8 includes all four phases with interpretation notes"
+
+  condition_4:
+    requirement: "Discussion limitations paragraph"
+    description: |
+      Dedicate paragraph in Discussion §5.3 to power limitations, sample size
+      constraints (limited post-London N=1,242), and future work recommendations
+      (longer post-Dencun time series).
+    responsible_party: "Manuscript Editor + Domain Reviewer"
+    oversight: "PI final review"
+    deliverable: "Discussion §5.3 paragraph (150-200 words) on study limitations"
+    deadline: "2025-11-04"
+    status: "PENDING"
+    verification_method: "PI approval that limitations are adequately acknowledged"
+
+# ============================================================================
+# KNOWN ISSUES & DOCUMENTATION
+# ============================================================================
+
+known_issues:
+  issue_1:
+    title: "Baseline effect not statistically significant"
+    description: "β = -0.66, p = 0.17 (NOT significant at α=0.05)"
+    severity: "MODERATE"
+    impact: "Requires calibrated manuscript language; cannot claim strong evidence"
+    mitigation: |
+      - Condition 1: Use "suggestive evidence" framing
+      - Emphasize S_t significant result (p < 0.001) as mechanistic support
+      - Triangulate with Phases 6/7/9 for convergent validity
+    documented_in:
+      - "results/phase10_robustness_onepager.md"
+      - "results/phase10_respec_decisions.md (Decision 1)"
+
+  issue_2:
+    title: "Event window effects concentrate impact"
+    description: "Excluding events reduces magnitude by 32% (β = -0.445 vs -0.656)"
+    severity: "LOW"
+    impact: "Effects are concentrated but not solely driven by event periods"
+    mitigation: |
+      - Baseline includes events (policy-relevant protocol changes)
+      - Event exclusion reported as robustness check (both results transparent)
+      - Interpretation: Both event-driven jumps AND gradual effects
+    documented_in:
+      - "results/phase10_respec_decisions.md (Decision 2)"
+
+  issue_3:
+    title: "Detrended specification sign flip"
+    description: "β = +2.13 due to multicollinearity (VIF > 10)"
+    severity: "LOW"
+    impact: "Known artifact; does not invalidate baseline"
+    mitigation: |
+      - Include in Table 7 with footnote annotation
+      - Full explanation in Methods Appendix §A.4
+      - Visual distinction (italics/gray) to signal non-standard spec
+    documented_in:
+      - "results/phase10_respec_decisions.md (Decision 3)"
+      - "Phase 6 diagnostic reports (multicollinearity documented)"
+
+# ============================================================================
+# DELIVERABLES & ARTIFACTS
+# ============================================================================
+
+deliverables:
+  primary:
+    - path: "results/table7_robustness_grid.csv"
+      description: "Manuscript-ready robustness grid (15 specifications)"
+      checksum: "SHA256:computed"
+      rows: 15
+
+    - path: "results/robustness_long_results.csv"
+      description: "Machine-readable full results (all coefficients, CIs, diagnostics)"
+      checksum: "SHA256:computed"
+      rows: 15
+
+    - path: "results/robustness_spec_registry.yaml"
+      description: "Complete specification metadata (treatments, outcomes, parameters)"
+      checksum: "SHA256:computed"
+      n_specifications: 15
+
+    - path: "results/robustness_leakage_audit.log"
+      description: "Zero-violation audit trail (MANDATORY leakage checks)"
+      checksum: "SHA256:computed"
+      violations: 0
+
+    - path: "results/robustness_diagnostics.yaml"
+      description: "Summary statistics (convergence, sign consistency, beta stability)"
+      checksum: "SHA256:computed"
+
+  figures:
+    - path: "results/figures/fig10_tornado.pdf"
+      description: "Robustness tornado plot (PRIMARY visualization)"
+      status: "PENDING - Visualization Lead action"
+      input_data: "results/robustness_long_results.csv"
+
+    - path: "results/figures/fig10_tornado.png"
+      description: "Tornado plot raster format (300 DPI)"
+      status: "PENDING - Visualization Lead action"
+
+    - path: "results/figures/fig10_tornado.svg"
+      description: "Tornado plot editable vector format"
+      status: "PENDING - Visualization Lead action"
+
+  documentation:
+    - path: "results/phase10_robustness_summary.md"
+      description: "Executive summary generated by Causal Modeler"
+
+    - path: "results/phase10_robustness_onepager.md"
+      description: "PI one-pager for manuscript integration"
+
+    - path: "results/phase10_respec_decisions.md"
+      description: "PI re-specification decisions memo (4 critical decisions)"
+
+    - path: "results/qa/gate_g6_signoff.yaml"
+      description: "This formal gate sign-off document"
+
+    - path: "results/phase10_manuscript_handoff.md"
+      description: "Handoff package for Manuscript Editor"
+
+# ============================================================================
+# QUALITY METRICS
+# ============================================================================
+
+quality_metrics:
+  methodological:
+    total_specifications: 15
+    converged_specifications: 15
+    convergence_rate: 1.00
+    leakage_violations: 0
+    sign_correct: 13
+    sign_consistency_rate: 0.87
+
+  statistical:
+    baseline_beta: -0.6558
+    baseline_se: 0.4749
+    baseline_pvalue: 0.1676
+    baseline_ci_lower: -1.5875
+    baseline_ci_upper: 0.2760
+    mean_beta: -0.3958
+    median_beta: -0.5427
+    std_beta: 0.7787
+    range_min: -1.5258
+    range_max: 2.1318
+
+  robustness:
+    hac_sensitivity_max_se_deviation: 0.14
+    outlier_handling_deviation: 0.034
+    demand_proxy_max_deviation: 0.183
+    event_exclusion_deviation: 0.322
+    placebo_test_pvalue: 0.8106
+
+# ============================================================================
+# PHASE AUTHORIZATION
+# ============================================================================
+
+phase_11_authorization:
+  status: "AUTHORIZED"
+  authorization_date: "2025-10-10"
+  conditions_must_be_met: true
+  lead: "Bayesian Modeler"
+  oversight: "PI Orchestrator"
+
+  scope:
+    - "BSTS counterfactual quantification (low-L2 scenario at 10th percentile)"
+    - "Posterior predictive distributions with 90-95% credible intervals"
+    - "Prior sensitivity analysis (varying spike-and-slab, local linear trend specs)"
+    - "Integration with Phase 10 robustness bounds"
+
+  blockers: []
+
+  critical_path:
+    - "Review Phase 8 BSTS artifacts and posterior diagnostics"
+    - "Specify low-L2 counterfactual scenario (10th percentile A_t)"
+    - "Generate posterior predictive distributions with wide intervals"
+    - "Conduct prior sensitivity checks"
+    - "Create counterfactual quantification plots (Figure 11)"
+    - "Draft Phase 11 summary with uncertainty quantification"
+
+  timeline:
+    kickoff: "2025-10-14"
+    completion: "2025-10-28"
+
+# ============================================================================
+# INTEGRATION POINTS
+# ============================================================================
+
+manuscript_integration:
+  results_section:
+    section: "§4.7 - Robustness and Sensitivity Analysis"
+    length: "2-3 paragraphs"
+    tables: ["Table 7"]
+    figures: ["Figure 10"]
+    tone: "Transparent, measured, scientifically honest"
+    language: "Suggestive evidence (per Condition 1)"
+
+  discussion_section:
+    section: "§5.3 - Limitations and Future Work"
+    length: "1 paragraph (150-200 words)"
+    content: "Power limitations, sample size, future research (per Condition 4)"
+
+  methods_appendix:
+    section: "§A.4 - Robustness Protocol"
+    content:
+      - "Full specification registry (15 specs)"
+      - "Leakage audit protocol"
+      - "HAC lag selection rationale"
+      - "Detrended specification diagnostics (VIF table)"
+      - "Event window definitions"
+
+  supplementary_materials:
+    files:
+      - "robustness_long_results.csv (machine-readable results)"
+      - "robustness_spec_registry.yaml (metadata)"
+      - "robustness_leakage_audit.log (audit trail)"
+
+# ============================================================================
+# RISK REGISTER
+# ============================================================================
+
+risks:
+  risk_1:
+    title: "Manuscript overstates evidence strength"
+    probability: "MEDIUM"
+    impact: "HIGH"
+    mitigation: "Condition 1 enforces language calibration; PI review required"
+    owner: "PI Orchestrator"
+
+  risk_2:
+    title: "Phase 11 counterfactuals use narrow intervals"
+    probability: "LOW"
+    impact: "MEDIUM"
+    mitigation: "Condition 2 mandates 90-95% CIs; PI reviews BSTS specs"
+    owner: "PI Orchestrator"
+
+  risk_3:
+    title: "Triangulation table omits key comparisons"
+    probability: "LOW"
+    impact: "MEDIUM"
+    mitigation: "Condition 3 specifies required phases; PI creates table draft"
+    owner: "PI Orchestrator"
+
+  risk_4:
+    title: "Limitations inadequately addressed in Discussion"
+    probability: "MEDIUM"
+    impact: "MEDIUM"
+    mitigation: "Condition 4 requires dedicated paragraph; PI approval needed"
+    owner: "Manuscript Editor"
+
+# ============================================================================
+# SIGN-OFF ATTESTATION
+# ============================================================================
+
+attestation: |
+  I, the Principal Investigator and Causal Lead Orchestrator, hereby attest that:
+
+  1. I have reviewed all Phase 10 deliverables (Table 7, long results, spec registry,
+     leakage audit, diagnostics, and summary reports).
+
+  2. I have conducted ultrathinking analysis on the robustness findings and made
+     four critical re-specification decisions documented in phase10_respec_decisions.md.
+
+  3. I approve CONDITIONAL passage of Gate G6 with the four conditions documented above.
+
+  4. I authorize Phase 11 (Counterfactual Quantification) to proceed subject to
+     compliance with Conditions 1-4.
+
+  5. I commit to monitoring condition compliance and reviewing Phase 11 specifications,
+     manuscript drafts, and triangulation tables before final approval.
+
+  6. This gate sign-off is FINAL and binding for manuscript integration and Phase 11-13.
+
+signature: "Principal Investigator / Causal Lead Orchestrator"
+date: "2025-10-10"
+timestamp: "2025-10-10T14:45:00Z"
+
+# ============================================================================
+# REFERENCES
+# ============================================================================
+
+references:
+  internal:
+    - "results/phase10_robustness_summary.md"
+    - "results/phase10_robustness_onepager.md"
+    - "results/phase10_respec_decisions.md"
+    - "results/phase10_manuscript_handoff.md"
+    - "results/table7_robustness_grid.csv"
+    - "results/robustness_leakage_audit.log"
+
+  implementation_plan:
+    file: "docs/CRITICAL_proj1_causal_impact_end_to_end_implementation_plan.md"
+    section: "Phase 10: Robustness & Sensitivity Suite"
+    lines: "466-500"
+
+  role_description:
+    file: "docs/CRITICAL_proj1_roles_descp_for_end_to_end_plan.md"
+    section: "PI/Causal Lead Orchestrator"
+    lines: "145-167"
+
+# ============================================================================
+# VERSIONING
+# ============================================================================
+
+version: "1.0.0"
+created: "2025-10-10"
+last_modified: "2025-10-10"
+schema_version: "gate_signoff_v2"

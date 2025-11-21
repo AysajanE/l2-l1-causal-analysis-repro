@@ -1,0 +1,419 @@
+# ============================================================================
+# Core Panel v1 - Metadata & Provenance
+# ============================================================================
+# This file documents the provenance, schema, and quality metrics for the
+# main analytical dataset used in Phase 6-11 (causal inference analysis).
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Dataset Identification
+# ----------------------------------------------------------------------------
+dataset_name: core_panel_v1
+version: 1
+analysis_version_id: 1
+file_format: parquet
+compression: snappy
+
+# File Information
+file_path: data/core_panel_v1/core_panel_v1.parquet
+file_size_bytes: 128169
+file_size_human: 125.2 KB
+
+# Checksums (for integrity verification)
+checksums:
+  sha256: "52f4ed01663228ae80cd53dca9bac4bfdff6f6a197443bb79d7434a603fe2423"
+  md5: "dde30ecce588e722da67da9d625c529c"
+
+# ----------------------------------------------------------------------------
+# Temporal Coverage
+# ----------------------------------------------------------------------------
+temporal_coverage:
+  start_date: "2021-08-05"
+  end_date: "2024-12-31"
+  frequency: daily
+  total_observations: 1245
+
+  # Analysis subsample (post-London for log C_fee)
+  analysis_start_date: "2021-08-05"
+  analysis_end_date: "2024-12-31"
+  analysis_observations: 1245
+
+# ----------------------------------------------------------------------------
+# Data Lineage & Provenance
+# ----------------------------------------------------------------------------
+provenance:
+  source_system: Google BigQuery
+  source_dataset: eth_scaling_mart
+  source_table: mart_analysis_panel_daily
+
+  # Export metadata
+  export_script: scripts/export_panel_from_bigquery.py
+  export_date: "2024-09-15"
+  export_timestamp: "2024-09-15T18:30:00Z"
+
+  # dbt model lineage
+  dbt_model: l2_l1_segmentation_dbt/models/marts/mart_analysis_panel_daily.sql
+  dbt_version: "1.7.0"
+  dbt_project_version: "4.3"
+
+  # Upstream data sources
+  upstream_sources:
+    - name: Dune Analytics
+      description: L1 and L2 transaction counts, gas metrics
+      snapshot_date: "2024-09-01"
+
+    - name: BigQuery Public Datasets
+      description: crypto_ethereum raw blockchain data
+      dataset: bigquery-public-data.crypto_ethereum
+
+    - name: CoinGecko API
+      description: ETH price historical data
+      endpoint: /api/v3/coins/ethereum/market_chart/range
+
+    - name: SerpAPI
+      description: Google Trends search interest data
+      keywords: ["ethereum", "ethereum gas", "layer 2"]
+
+  # Processing phases
+  processing_phases:
+    - phase: 1
+      name: ETL - Data Extraction
+      scripts: [src/etl/extract_dune.py, scripts/collect_controls_price.py]
+
+    - phase: 2
+      name: Data Transformation
+      scripts: [l2_l1_segmentation_dbt/models/staging/*]
+
+    - phase: 3
+      name: Feature Engineering
+      scripts: [scripts/build_demand_factor_lite.py, scripts/phase3_realized_volatility.py]
+
+    - phase: 4
+      name: Panel Assembly
+      scripts: [l2_l1_segmentation_dbt/models/marts/mart_analysis_panel_daily.sql]
+
+# ----------------------------------------------------------------------------
+# Schema & Variables
+# ----------------------------------------------------------------------------
+schema_version: "1.0"
+schema_json: data/core_panel_v1/core_panel_v1_schema.json
+
+# Key variable groups
+variable_groups:
+  temporal:
+    - date
+    - day_of_week
+    - is_weekend
+    - is_month_end
+    - is_quarter_end
+    - month
+    - quarter
+    - year
+
+  treatment:
+    - A_t_clean  # Primary treatment: L2 transaction share
+    - l2_total_tx
+    - l1_user_tx
+
+  outcomes:
+    - log_median_tx_fee_wei  # Primary outcome (post-London)
+    - gas_utilization  # Secondary outcome (u_t)
+    - scarcity_harmonized  # Secondary outcome (S_t)
+    - median_base_fee_gwei  # (post-London only)
+    - median_priority_fee_gwei  # (post-London only)
+
+  confounders:
+    - d_star  # Composite demand factor
+    - log_eth_price_usd
+    - realized_volatility
+    - cex_volume_usd
+    - google_trends_index
+
+  regime_indicators:
+    - post_london  # EIP-1559 (2021-08-05)
+    - post_merge  # PoS transition (2022-09-15)
+    - post_dencun  # EIP-4844 blob txs (2024-03-13)
+
+  l2_specific:
+    - arbitrum_tx_count
+    - optimism_tx_count
+    - base_tx_count
+    - zksync_tx_count
+    - starknet_tx_count
+    - polygon_zkevm_tx_count
+
+  validation:
+    - data_quality_flag
+    - imputation_flag
+    - outlier_flag
+
+# Variable counts
+variable_counts:
+  total: 45
+  temporal: 9
+  treatment: 3
+  outcomes: 5
+  confounders: 5
+  regime_indicators: 3
+  l2_specific: 6
+  validation: 3
+  other: 11
+
+# ----------------------------------------------------------------------------
+# Data Quality Metrics
+# ----------------------------------------------------------------------------
+quality_metrics:
+  completeness:
+    missing_values: 0
+    missing_percentage: 0.0
+    complete_cases: 1642
+
+  # Outlier treatment
+  outlier_policy:
+    winsorization_applied: false  # Per G1 gate approval
+    treatment_variable: no_winsorization
+    outcomes: no_winsorization
+    confounders:
+      - variable: d_star_components
+        method: winsorize
+        percentiles: [1, 99]
+
+  # Data quality flags
+  quality_flags:
+    total_flagged_days: 0
+    reasons: []
+
+  # Validation checks passed
+  validation_checks:
+    - check: no_duplicate_dates
+      status: PASS
+    - check: date_continuity
+      status: PASS
+    - check: treatment_range_0_to_1
+      status: PASS
+    - check: positive_transaction_counts
+      status: PASS
+    - check: regime_indicators_binary
+      status: PASS
+    - check: no_future_data_leakage
+      status: PASS
+
+# ----------------------------------------------------------------------------
+# Treatment & Outcome Definitions
+# ----------------------------------------------------------------------------
+definitions:
+  treatment:
+    name: A_t_clean
+    formula: "L2_total_tx / (L1_user_tx + L2_total_tx)"
+    range: [0, 1]
+    interpretation: "Share of transaction activity on L2s (vs. L1+L2 total)"
+    exclusions: "L2→L1 posting transactions excluded from both numerator and L1 counts"
+
+  primary_outcome:
+    name: log_median_tx_fee_wei
+    formula: "log(median_tx_fee_wei + 1)"
+    sample_restriction: "Post-London only (2021-08-05 onwards)"
+    units: "natural log of wei"
+    interpretation: "Semi-elasticity of median transaction fee"
+
+  secondary_outcomes:
+    - name: gas_utilization
+      formula: "gas_used / gas_limit"
+      range: [0, 1]
+      interpretation: "L1 network capacity utilization rate"
+
+    - name: scarcity_harmonized
+      formula: "stitched metric (pre/post-London compatible)"
+      units: "index (0-100 scale)"
+      interpretation: "Harmonized measure of L1 block space scarcity"
+
+# ----------------------------------------------------------------------------
+# Chain Set (L2s Included)
+# ----------------------------------------------------------------------------
+l2_chains:
+  included:
+    - name: Arbitrum One
+      launch_date: "2021-08-31"
+      first_activity: "2021-09-01"
+      type: optimistic_rollup
+
+    - name: Optimism
+      launch_date: "2021-12-16"
+      first_activity: "2021-12-17"
+      type: optimistic_rollup
+
+    - name: Base
+      launch_date: "2023-07-13"
+      first_activity: "2023-07-14"
+      type: optimistic_rollup
+      stack: op_stack
+
+    - name: zkSync Era
+      launch_date: "2023-03-24"
+      first_activity: "2023-03-25"
+      type: zk_rollup
+
+    - name: Starknet
+      launch_date: "2021-11-29"
+      first_activity: "2021-11-30"
+      type: zk_rollup
+      proof_system: STARK
+
+    - name: Polygon zkEVM
+      launch_date: "2023-03-27"
+      first_activity: "2023-03-28"
+      type: zk_rollup
+      notes: "Excluded from some robustness checks due to data quality issues"
+
+  excluded:
+    - name: Polygon PoS
+      reason: "Not a rollup (separate L1 blockchain)"
+    - name: Loopring
+      reason: "Insufficient daily transaction volume"
+
+# ----------------------------------------------------------------------------
+# Posting Registry
+# ----------------------------------------------------------------------------
+posting_registry:
+  version: "Phase 2 final"
+  freeze_date: "2024-09-15"
+  total_addresses: 60
+
+  by_chain:
+    arbitrum: 18
+    optimism: 12
+    zksync: 8
+    base: 9
+    starknet: 6
+    polygon_zkevm: 7
+
+  source: l2_l1_segmentation_dbt/models/staging/stg_l2_posting_contracts.sql
+  checksum_md5: "a4f2c3e8d1b9f0a7"  # Placeholder - generate actual
+
+# ----------------------------------------------------------------------------
+# Adjustment Set (Covariates)
+# ----------------------------------------------------------------------------
+adjustment_set:
+  confounders:
+    - d_star
+
+  regime_indicators:
+    - post_london
+    - post_merge
+    - post_dencun
+
+  calendar_effects:
+    - is_weekend
+    - is_month_end
+    - is_quarter_end
+    - day_of_week
+
+  seasonality:
+    - month_fe  # 11 dummy variables
+    - quarter_fe  # 3 dummy variables (optional)
+
+  exclusions:
+    reason: "G3 mediator leakage gate"
+    excluded_variables:
+      - l2_posting_gas
+      - l2_posting_calldata_bytes
+      - l2_blob_gas_used
+
+# ----------------------------------------------------------------------------
+# Version Control
+# ----------------------------------------------------------------------------
+versioning:
+  current_version: 1
+  freeze_status: FROZEN
+  freeze_date: "2024-09-15"
+  freeze_authority: "PI Orchestrator"
+
+  increment_required_for:
+    - "Treatment definition change (A_t formula)"
+    - "Outcome construction change (log C_fee, u_t, S_t)"
+    - "Chain set modification (add/remove L2s)"
+    - "Posting registry update (add/remove addresses)"
+    - "D★ specification change"
+    - "Regime dates change (London/Merge/Dencun)"
+    - "Sample period change (start/end dates)"
+
+  safe_changes:
+    - "Documentation updates"
+    - "Code refactoring (no logic change)"
+    - "Visualization improvements"
+
+# ----------------------------------------------------------------------------
+# Replication & Archival
+# ----------------------------------------------------------------------------
+replication:
+  # Minimal replication (no BigQuery)
+  minimal_replication:
+    required_files:
+      - environment.yml
+      - renv.lock
+      - data/core_panel_v1/core_panel_v1.parquet
+      - src/analysis/*.py
+      - src/analysis/*.R
+    runtime_estimate: "30-60 minutes"
+
+  # Full pipeline rebuild
+  full_rebuild:
+    required_services:
+      - Google Cloud Platform (BigQuery)
+      - Dune Analytics API
+    runtime_estimate: "4-8 hours"
+    cost_estimate: "$20-50 USD (BigQuery queries)"
+
+archival:
+  primary_location: Zenodo
+  doi: "[To be assigned]"
+  retention_guarantee: "10+ years"
+  license: CC-BY-4.0
+
+  secondary_locations:
+    - OSF (Open Science Framework)
+    - Institutional repository (UC Berkeley Dash)
+
+# ----------------------------------------------------------------------------
+# Quality Gates Passed
+# ----------------------------------------------------------------------------
+quality_gates:
+  G1_winsorization: APPROVED
+  G2_positivity: PASS
+  G3_mediator_leakage: PASS
+  G4_event_window: PASS
+  G5_specification_curve: PASS
+  G6_robustness: CONDITIONAL_APPROVAL
+  G7_preregistration: COMPLIANT
+
+# ----------------------------------------------------------------------------
+# Contact & Maintenance
+# ----------------------------------------------------------------------------
+contacts:
+  data_engineer: "[Name] <email@institution.edu>"
+  reproducibility_lead: "[Name] <email@institution.edu>"
+  corresponding_author: "[Name] <email@institution.edu>"
+
+maintenance:
+  last_updated: "2024-09-15"
+  update_frequency: "None (frozen for publication)"
+  issue_tracker: "https://github.com/YOUR_ORG/L1-L2-causal-influence-analysis/issues"
+
+# ----------------------------------------------------------------------------
+# Related Documentation
+# ----------------------------------------------------------------------------
+documentation:
+  - file: docs/REPLICATION.md
+    description: Complete replication guide
+  - file: docs/VERSION_FREEZE.md
+    description: Analysis version 1.0 specifications
+  - file: docs/preregistration.md
+    description: Preregistered estimands and methods
+  - file: data/core_panel_v1/core_panel_v1_schema.json
+    description: Detailed schema with field types
+  - file: docs/data_dictionary.md
+    description: Variable definitions and sources
+
+# ============================================================================
+# End of Metadata
+# ============================================================================

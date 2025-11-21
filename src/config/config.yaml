@@ -1,0 +1,15 @@
+project:
+  name: l2-l1-causal-impact
+
+bigquery:
+  project_id: ${GOOGLE_CLOUD_PROJECT}
+  dataset: ${BIGQUERY_DATASET}
+
+paths:
+  data_dir: ${DATA_DIR:-./data}
+  results_dir: ${RESULTS_DIR:-./results}
+
+params:
+  timezone: UTC
+  panel_frequency: D
+

@@ -1,0 +1,15 @@
+dpi: 300
+figure_id: figure_10
+formats:
+- pdf
+- png
+- svg
+generated_at: '2025-10-22T17:42:47.216899'
+saved_files:
+  pdf: /Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal
+    Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/l2-l1-causal-impact/results/figures/fig10_tornado.pdf
+  png: /Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal
+    Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/l2-l1-causal-impact/results/figures/fig10_tornado.png
+  svg: /Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal
+    Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/l2-l1-causal-impact/results/figures/fig10_tornado.svg
+title: Robustness Tornado Plot

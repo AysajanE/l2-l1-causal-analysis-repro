@@ -1,0 +1,26 @@
+# General
+.DS_Store
+.env
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+
+# Build/cache
+build/
+dist/
+*.egg-info/
+
+# LaTeX aux files
+*.aux
+*.bbl
+*.blg
+*.toc
+*.lot
+*.lof
+*.out
+*.log
+
+# Large/raw not meant for git (fetched via scripts)
+*.parquet.zip
+*.tar.gz
+*.zip~

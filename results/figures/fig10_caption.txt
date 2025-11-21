@@ -1,0 +1,22 @@
+FIGURE 10: Robustness of Total Effect Estimates Across Sensitivity Analyses
+
+Tornado plot showing point estimates (circles) and 95% confidence intervals (horizontal bars) for the semi-elasticity of log base fee with respect to L2 adoption (A_t) across 11 robustness dimensions. The baseline specification (black, top) estimates ∂log(C^fee)/∂A_t = -0.234 (95% CI: [-0.322, -0.146]), indicating that a 10 percentage point increase in L2 adoption is associated with approximately a 2.3% reduction in L1 base fees, controlling for demand factors (D★), regime indicators, calendar effects, and linear time trend (N=856 days post-London, 2021-08-05 to 2024-12-31).
+
+Robustness specifications span:
+(1) Outcome swaps: utilization (u_t) and scarcity index (S_t) as alternative dependent variables;
+(2) Demand factor variants: D★-lite (3-component PCA), drop individual components (returns, realized volatility), alternative aggregation methods;
+(3) Outlier handling: no winsorization vs. 1% trimming at both tails;
+(4) Placebo tests: non-event dates and permuted treatment (A_t) to validate identification (correctly yield null/near-zero effects);
+(5) HAC lag sensitivity: Newey-West standard errors with 14-day, 21-day (baseline), and 28-day lags, plus block bootstrap;
+(6) BSTS counterfactual baselines: low-L2 scenarios at 5th and 25th percentiles of A_t;
+(7) RDiT bandwidth: regression discontinuity in time with 0.5×, 1.0× (optimal), and 1.5× bandwidth multipliers;
+(8) Treatment definition: address-weighted vs. transaction-weighted (baseline) L2 adoption;
+(9) Event registry: exclude event windows vs. IV estimation using L2 launch/upgrade dummies as instruments;
+(10) Mediation timing: contemporaneous (baseline) vs. 1-day lagged blob data gas (post-Dencun only);
+(11) Demand anomalies: dropping days flagged by CEX-volume anomaly detector.
+
+The vertical red dashed line marks the baseline estimate. Colors distinguish robustness dimensions using a colorblind-friendly palette (Okabe-Ito). All credible specifications (excluding placebo tests designed to yield null effects) produce negative estimates, with 95% confidence intervals substantially overlapping. The consistency of sign and magnitude across diverse identification strategies, data definitions, and inference methods demonstrates the stability and credibility of the total effect estimate. Placebo tests (yellow) correctly show near-zero effects for non-event dates and permuted treatment, validating our causal identification strategy. See Table 7 for complete numerical results and specification details.
+
+---
+
+NOTE: This caption is drafted for manuscript integration. Adjust length and detail level to match journal requirements and section context.

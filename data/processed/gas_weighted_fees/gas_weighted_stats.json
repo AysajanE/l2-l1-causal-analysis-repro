@@ -1,0 +1,10 @@
+{
+  "date_range": "2023-10-27 to 2024-03-12",
+  "n_days": 138,
+  "mean_bf_obs_gwei": 34.05853936609411,
+  "median_bf_obs_gwei": 31.751314276915487,
+  "p10_bf_obs_gwei": 17.07437597778343,
+  "p90_bf_obs_gwei": 56.16378384267605,
+  "total_gas_used": 14885540292161.0,
+  "has_block_data": true
+}

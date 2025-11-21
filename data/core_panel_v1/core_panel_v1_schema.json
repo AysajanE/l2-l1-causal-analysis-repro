@@ -1,0 +1,106 @@
+[
+  {
+    "name": "date",
+    "dtype": "dbdate"
+  },
+  {
+    "name": "year",
+    "dtype": "Int64"
+  },
+  {
+    "name": "month",
+    "dtype": "Int64"
+  },
+  {
+    "name": "log_base_fee",
+    "dtype": "float64"
+  },
+  {
+    "name": "base_fee_median_gwei",
+    "dtype": "float64"
+  },
+  {
+    "name": "u_t",
+    "dtype": "float64"
+  },
+  {
+    "name": "S_t",
+    "dtype": "float64"
+  },
+  {
+    "name": "A_t_clean",
+    "dtype": "float64"
+  },
+  {
+    "name": "D_star",
+    "dtype": "float64"
+  },
+  {
+    "name": "D_star_original",
+    "dtype": "float64"
+  },
+  {
+    "name": "sign_flip_applied",
+    "dtype": "boolean"
+  },
+  {
+    "name": "regime_post_london",
+    "dtype": "Int64"
+  },
+  {
+    "name": "regime_post_merge",
+    "dtype": "Int64"
+  },
+  {
+    "name": "regime_post_dencun",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_china_ban",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_otherside_mint",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_terra_luna",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_ftx_collapse",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_usdc_depeg",
+    "dtype": "Int64"
+  },
+  {
+    "name": "shock_any",
+    "dtype": "Int64"
+  },
+  {
+    "name": "weekday",
+    "dtype": "Int64"
+  },
+  {
+    "name": "is_weekend",
+    "dtype": "Int64"
+  },
+  {
+    "name": "is_month_end",
+    "dtype": "Int64"
+  },
+  {
+    "name": "eth_return_1d_log",
+    "dtype": "float64"
+  },
+  {
+    "name": "cex_volume_log",
+    "dtype": "float64"
+  },
+  {
+    "name": "assembled_at",
+    "dtype": "datetime64[us, UTC]"
+  }
+]

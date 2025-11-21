@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Residual diagnostics for confirmatory estimators (CORE ITEM 12)}
+\label{tab:c12_error_process}
+\begin{tabular}{lcccc}
+\toprule
+Model & Durbin--Watson & Ljung--Box $p$ (lag 10) & Ljung--Box $p$ (lag 20) & Decision \\
+\midrule
+Levels OLS & 0.15 & 0.000 & 0.000 & Residual autocorrelation detected \\
+FGLS AR(1) & 2.18 & 0.000 & 0.000 & Residual autocorrelation detected \\
+ECM ($\Delta$ spec) &  & 0.000 &  & Residual autocorrelation detected \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\textwidth}
+\small
+\textit{Note:} Levels OLS reports strong autocorrelation. FGLS applies Prais--Winsten; ECM is estimated in differences.
+
+\hfill\footnotesize\textcolor{gray}{Data: \texttt{core\_panel\_v1} \;|\; Code: \texttt{src/analysis/06d\_error\_process\_diagnostics.py}}
+\end{minipage}
+\end{table}

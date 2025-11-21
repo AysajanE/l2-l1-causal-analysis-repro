@@ -1,0 +1,8 @@
+{
+  "date_range": "2023-10-27 to 2024-03-12",
+  "n_days": 138,
+  "mean_tip_obs_gwei": 4.978027400259964,
+  "median_tip_obs_gwei": 4.812663225763539,
+  "p90_tip_obs_gwei": 6.502181090177475,
+  "is_estimated": false
+}

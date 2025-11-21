@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: If you use this work, please cite it as below.
+title: L1–L2 Causal Influence Analysis (Reproducibility Package)
+authors:
+  - family-names: Eziz
+    given-names: Aysajan
+    affiliation: Ivey Business School
+    orcid: https://orcid.org/0000-0002-3275-2333
+date-released: 2025-11-20
+version: 1.0.2
+doi: 10.5281/zenodo.17665906

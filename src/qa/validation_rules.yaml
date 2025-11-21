@@ -1,0 +1,302 @@
+# Validation Rules for Legacy Data Reconciliation and Master Panel
+version: "1.0"
+description: "Comprehensive QA validation rules for legacy data ingestion and master panel v0"
+
+# Regime-specific constraints
+regime_dates:
+  london_fork: "2021-08-05"    # EIP-1559 (base fee starts)
+  merge: "2022-09-15"          # Proof of Stake transition
+  dencun: "2024-03-13"         # EIP-4844 (blob posting starts)
+
+# Global validation parameters
+global_params:
+  date_range:
+    min: "2021-01-01"
+    max: "2024-12-31"
+
+  acceptable_null_rate: 0.05   # Up to 5% missing data acceptable
+  extreme_outlier_threshold: 3  # Standard deviations for outlier detection
+
+# Intermediate table validation rules
+intermediate_tables:
+
+  l1_daily_transactions:
+    required_columns: [date, l1_tx_count]
+    checks:
+      - name: date_continuity
+        rule: no_gaps_in_date_sequence
+        severity: error
+
+      - name: positive_tx_count
+        columns: [l1_tx_count]
+        rule: greater_than_or_equal
+        value: 0
+        severity: error
+
+      - name: reasonable_tx_count
+        columns: [l1_tx_count]
+        rule: between
+        min_value: 100000      # Minimum ~100k tx/day
+        max_value: 2000000     # Maximum ~2M tx/day
+        severity: warning
+
+  l1_daily_blocks:
+    required_columns: [date]
+    checks:
+      - name: positive_gas_metrics
+        columns: [gas_used, gas_limit]
+        rule: greater_than
+        value: 0
+        severity: error
+
+      - name: gas_used_less_than_limit
+        rule: custom
+        expression: "gas_used <= gas_limit * 1.1"  # Allow small burst
+        severity: error
+
+      - name: base_fee_null_pre_london
+        columns: [base_fee_gwei]
+        rule: null_before_date
+        date: "2021-08-05"
+        severity: error
+
+      - name: base_fee_positive_post_london
+        columns: [base_fee_gwei]
+        rule: greater_than_after_date
+        value: 0
+        date: "2021-08-05"
+        severity: error
+
+      - name: reasonable_base_fee
+        columns: [base_fee_gwei]
+        rule: between
+        min_value: 0.1         # 0.1 gwei minimum
+        max_value: 1000        # 1000 gwei maximum
+        severity: warning
+        apply_after_date: "2021-08-05"
+
+      - name: reasonable_gas_limit
+        columns: [gas_limit]
+        rule: between
+        min_value: 10000000    # 10M gas minimum
+        max_value: 50000000    # 50M gas maximum
+        severity: warning
+
+  l2_daily_metrics:
+    required_columns: [date, chain, tx_count]
+    checks:
+      - name: valid_chain_names
+        columns: [chain]
+        rule: in_list
+        values: [arbitrum, optimism, base, zksync, starknet]
+        severity: error
+
+      - name: positive_l2_tx_count
+        columns: [tx_count, active_addr]
+        rule: greater_than_or_equal
+        value: 0
+        severity: error
+
+      - name: reasonable_l2_tx_count
+        columns: [tx_count]
+        rule: between
+        min_value: 0
+        max_value: 10000000    # 10M tx/day per chain
+        severity: warning
+
+      - name: active_addr_less_than_tx
+        rule: custom
+        expression: "active_addr <= tx_count"
+        severity: warning
+
+  mediator_pre_dencun_calldata:
+    required_columns: [date]
+    checks:
+      - name: positive_calldata_bytes
+        columns: [calldata_bytes, P_calldata_bytes]
+        rule: greater_than_or_equal
+        value: 0
+        severity: error
+
+      - name: calldata_null_post_dencun
+        columns: [calldata_bytes, P_calldata_bytes]
+        rule: null_after_date
+        date: "2024-03-13"
+        severity: warning  # Warning since migration might be gradual
+
+  controls_price:
+    required_columns: [date, eth_close_usd]
+    checks:
+      - name: positive_eth_price
+        columns: [eth_close_usd, eth_open_usd, eth_high_usd, eth_low_usd]
+        rule: greater_than
+        value: 0
+        severity: error
+
+      - name: reasonable_eth_price
+        columns: [eth_close_usd]
+        rule: between
+        min_value: 1           # $1 minimum
+        max_value: 20000       # $20k maximum
+        severity: warning
+
+      - name: price_consistency
+        rule: custom
+        expression: "eth_low_usd <= eth_close_usd <= eth_high_usd"
+        severity: error
+
+# Master panel validation rules
+master_panel:
+  table_name: master_panel_v0
+  required_columns: [date]
+
+  completeness_checks:
+    - name: date_range_coverage
+      rule: date_range_complete
+      start_date: "2021-01-01"
+      end_date: "2024-12-31"
+      severity: error
+
+    - name: no_duplicate_dates
+      rule: unique_values
+      columns: [date]
+      severity: error
+
+  metric_validation:
+    - name: utilization_bounds
+      columns: [u_t]
+      rule: between
+      min_value: 0.0
+      max_value: 1.5         # Allow burst capacity
+      severity: error
+
+    - name: adoption_bounds
+      columns: [A_t, A_arbitrum, A_optimism, A_base]
+      rule: between
+      min_value: 0.0
+      max_value: 1.0
+      severity: error
+
+    - name: log_metrics_not_infinite
+      columns: [C_fee, G_eff, S_t, eth_price_log]
+      rule: finite_values
+      severity: error
+
+    - name: consistent_regime_flags
+      rule: custom
+      expression: "regime_pre_london + regime_post_london + regime_post_merge + regime_post_dencun == 1"
+      severity: error
+
+  regime_consistency:
+    - name: c_fee_only_post_london
+      columns: [C_fee]
+      rule: null_before_date
+      date: "2021-08-05"
+      severity: error
+
+    - name: g_eff_only_pre_london
+      columns: [G_eff]
+      rule: null_after_date
+      date: "2021-08-05"
+      severity: error
+
+    - name: calldata_only_pre_dencun
+      columns: [P_calldata_bytes, P_calldata_mb]
+      rule: null_after_date
+      date: "2024-03-13"
+      severity: warning
+
+  data_quality:
+    - name: reasonable_l2_adoption_growth
+      columns: [A_t]
+      rule: monotonic_trend
+      direction: non_decreasing
+      window: 90             # 90-day trend should be non-decreasing
+      severity: warning
+
+    - name: no_extreme_outliers
+      columns: [C_fee, S_t, u_t, eth_return_1d]
+      rule: outlier_detection
+      method: zscore
+      threshold: 4.0         # 4 standard deviations
+      severity: warning
+
+    - name: correlation_checks
+      rule: correlation_bounds
+      pairs:
+        - [u_t, C_fee]       # Utilization and fees should be correlated post-London
+        - [A_t, P_calldata_bytes]  # L2 adoption and calldata should be correlated
+      min_correlation: 0.3
+      severity: warning
+
+# Cross-validation checks (against legacy panels)
+cross_validation:
+  reference_tables:
+    - name: legacy_engineered_panel
+      file: "Engineered_Metrics_Panel.csv"
+      tolerance: 0.05        # 5% tolerance for numeric comparisons
+
+      checks:
+        - name: l1_tx_count_consistency
+          compare_columns:
+            source: l1_tx_count
+            target: l1_tx_count
+          rule: relative_difference
+          max_diff: 0.02       # 2% difference acceptable
+
+        - name: l2_tx_consistency
+          compare_columns:
+            source: l2_total_tx
+            target: l2_tx_total
+          rule: relative_difference
+          max_diff: 0.05       # 5% difference acceptable
+
+        - name: block_time_consistency
+          compare_columns:
+            source: block_time_avg
+            target: block_time_seconds
+          rule: relative_difference
+          max_diff: 0.1        # 10% difference acceptable
+
+# Reporting configuration
+reporting:
+  output_format: markdown
+  include_plots: true
+  plot_types:
+    - time_series         # Time series plots for key metrics
+    - distribution       # Distribution plots for outlier detection
+    - correlation        # Correlation heatmaps
+
+  severity_levels:
+    error: "❌ CRITICAL"    # Must be fixed before proceeding
+    warning: "⚠️  WARNING"   # Should be investigated
+    info: "ℹ️  INFO"       # Informational only
+
+  summary_stats: true     # Include summary statistics in report
+  save_failed_records: true  # Save records that fail validation
+
+# Custom validation functions
+custom_rules:
+  monotonic_trend:
+    description: "Check if a metric shows expected monotonic trend over time"
+    implementation: "rolling window trend analysis"
+
+  correlation_bounds:
+    description: "Check if correlation between metrics is within expected bounds"
+    implementation: "pearson correlation with significance test"
+
+  relative_difference:
+    description: "Compare two columns and check relative difference"
+    implementation: "abs((a - b) / ((a + b) / 2))"
+
+  finite_values:
+    description: "Check that all values are finite (not inf, -inf, or nan)"
+    implementation: "pandas isfinite check"
+
+  null_before_date:
+    description: "Ensure column is null before specified date"
+    implementation: "date-conditional null check"
+
+  null_after_date:
+    description: "Ensure column is null after specified date"
+    implementation: "date-conditional null check"

@@ -1,0 +1,242 @@
+# L2 Events Registry - Comprehensive Major Events 2021-2024
+# Version: v1_2025_01
+# Description: Complete registry of major Layer 2 scaling events for causal analysis
+# Coverage: Protocol upgrades, L2 launches, major upgrades, airdrops, and significant events
+
+protocol_events:
+  london_eip1559:
+    date: "2021-08-05"
+    description: "London hard fork introduces EIP-1559 base fee mechanism"
+    chains: ["ethereum"]
+    intensity: 10.0
+    relevance: "ecosystem"
+    source_url: "https://ethereum.org/en/history/#london"
+
+  ethereum_merge:
+    date: "2022-09-15"
+    description: "Ethereum transitions from Proof of Work to Proof of Stake"
+    chains: ["ethereum"]
+    intensity: 10.0
+    relevance: "ecosystem"
+    source_url: "https://ethereum.org/en/roadmap/merge/"
+
+  dencun_eip4844:
+    date: "2024-03-13"
+    description: "Dencun upgrade introduces EIP-4844 blob transactions for L2 data availability"
+    chains: ["ethereum"]
+    intensity: 9.0
+    relevance: "ecosystem"
+    source_url: "https://ethereum.org/en/roadmap/dencun/"
+
+l2_mainnet_launches:
+  polygon_hermez_v1:
+    date: "2021-03-01"
+    description: "Polygon Hermez 1.0 mainnet launch - first decentralized zkRollup"
+    chains: ["polygon_hermez"]
+    intensity: 7.0
+    relevance: "chain_specific"
+    source_url: "https://polygon.technology/blog/polygon-hermez-decentralized-zk-rollup-is-now-live"
+
+  arbitrum_one_mainnet:
+    date: "2021-09-01"
+    description: "Arbitrum One mainnet public launch"
+    chains: ["arbitrum"]
+    intensity: 8.5
+    relevance: "ecosystem"
+    source_url: "https://arbitrum.io/"
+
+  starknet_alpha_mainnet:
+    date: "2021-11-16"
+    description: "StarkNet Alpha mainnet launch"
+    chains: ["starknet"]
+    intensity: 7.5
+    relevance: "chain_specific"
+    source_url: "https://www.starknet.io/blog/starknet-alpha-is-coming-to-mainnet/"
+
+  optimism_public_mainnet:
+    date: "2021-12-16"
+    description: "Optimism mainnet removes whitelist, opens to public"
+    chains: ["optimism"]
+    intensity: 8.0
+    relevance: "ecosystem"
+    source_url: "https://optimism.mirror.xyz/"
+
+  polygon_zkevm_mainnet:
+    date: "2023-03-27"
+    description: "Polygon zkEVM mainnet beta launch - first zkEVM compatible rollup"
+    chains: ["polygon_zkevm"]
+    intensity: 8.0
+    relevance: "ecosystem"
+    source_url: "https://polygon.technology/blog/polygon-zkevm-mainnet-beta-is-live"
+
+  zksync_era_mainnet:
+    date: "2023-03-24"
+    description: "zkSync Era mainnet public launch - first zkEVM to hit mainnet"
+    chains: ["zksync_era"]
+    intensity: 8.5
+    relevance: "ecosystem"
+    source_url: "https://blog.matter-labs.io/all-aboard-zksync-era-mainnet-8b10933ed6ab"
+
+  linea_mainnet:
+    date: "2023-07-11"
+    description: "Linea mainnet launch by ConsenSys"
+    chains: ["linea"]
+    intensity: 7.0
+    relevance: "chain_specific"
+    source_url: "https://consensys.io/blog/consensys-launches-linea-mainnet-unlocking-a-new-level-of-user-experience"
+
+  mantle_mainnet:
+    date: "2023-07-17"
+    description: "Mantle Network mainnet alpha launch"
+    chains: ["mantle"]
+    intensity: 6.5
+    relevance: "chain_specific"
+    source_url: "https://www.mantle.xyz/blog/community/mainnet-launch-event-roundups-more"
+
+  base_mainnet:
+    date: "2023-08-09"
+    description: "Base mainnet launch by Coinbase - OP Stack L2"
+    chains: ["base"]
+    intensity: 8.5
+    relevance: "ecosystem"
+    source_url: "https://www.coinbase.com/blog/introducing-base"
+
+  scroll_mainnet:
+    date: "2023-10-17"
+    description: "Scroll zkEVM mainnet launch"
+    chains: ["scroll"]
+    intensity: 7.5
+    relevance: "chain_specific"
+    source_url: "https://scroll.io/blog/scrollMainnet"
+
+major_upgrades:
+  arbitrum_nitro_upgrade:
+    date: "2022-08-31"
+    description: "Arbitrum Nitro upgrade - major performance and cost improvement"
+    chains: ["arbitrum"]
+    intensity: 8.0
+    relevance: "chain_specific"
+    source_url: "https://medium.com/offchainlabs/arbitrum-nitro-sneak-preview-44550d9054f5"
+
+  optimism_bedrock_upgrade:
+    date: "2023-06-06"
+    description: "Optimism Bedrock upgrade - 47% cost reduction and improved compatibility"
+    chains: ["optimism"]
+    intensity: 8.5
+    relevance: "chain_specific"
+    source_url: "https://www.theblock.co/post/230898/optimism-mainnet-bedrock-upgrade"
+
+  polygon_matic_to_pol_transition:
+    date: "2024-09-04"
+    description: "Polygon 2.0 MATIC to POL token migration begins"
+    chains: ["polygon"]
+    intensity: 7.0
+    relevance: "chain_specific"
+    source_url: "https://polygon.technology/blog/polygon-2-0-milestone-pol-contracts-are-live-on-ethereum-mainnet"
+
+major_airdrops:
+  dydx_airdrop:
+    date: "2021-09-08"
+    description: "dYdX DYDX token airdrop to 64,000 users - up to $123k per user"
+    chains: ["dydx"]
+    intensity: 7.5
+    relevance: "ecosystem"
+    source_url: "https://dydx.exchange/blog/introducing-dydx-token"
+
+  immutablex_airdrop:
+    date: "2021-11-05"
+    description: "ImmutableX IMX token airdrop to NFT users and Gods Unchained players"
+    chains: ["immutablex"]
+    intensity: 6.0
+    relevance: "chain_specific"
+    source_url: "https://immutableblog.medium.com/huge-imx-airdrop-for-early-backers-of-immutable-x-the-first-l2-for-nfts-48e731cd4d"
+
+  optimism_airdrop_1:
+    date: "2022-05-31"
+    description: "Optimism OP token airdrop 1 to ~250,000 addresses"
+    chains: ["optimism"]
+    intensity: 8.0
+    relevance: "ecosystem"
+    source_url: "https://community.optimism.io/op-token/airdrops/airdrop-1"
+
+  optimism_airdrop_2:
+    date: "2023-02-09"
+    description: "Optimism OP token airdrop 2 to ~307,000 addresses"
+    chains: ["optimism"]
+    intensity: 7.0
+    relevance: "ecosystem"
+    source_url: "https://community.optimism.io/op-token/airdrops/airdrop-2"
+
+  arbitrum_airdrop:
+    date: "2023-03-23"
+    description: "Arbitrum ARB token airdrop - 1.16B tokens to ecosystem participants"
+    chains: ["arbitrum"]
+    intensity: 9.0
+    relevance: "ecosystem"
+    source_url: "https://docs.arbitrum.foundation/airdrop-eligibility-distribution"
+
+  optimism_airdrop_3:
+    date: "2023-09-18"
+    description: "Optimism OP token airdrop 3 to 31,870 addresses"
+    chains: ["optimism"]
+    intensity: 6.0
+    relevance: "ecosystem"
+    source_url: "https://community.optimism.io/op-token/airdrops/airdrop-3"
+
+  optimism_airdrop_4:
+    date: "2024-02-15"
+    description: "Optimism OP token airdrop 4 to NFT creators - 22,998 addresses"
+    chains: ["optimism"]
+    intensity: 5.0
+    relevance: "ecosystem"
+    source_url: "https://community.optimism.io/op-token/airdrops/airdrop-4"
+
+  zksync_airdrop:
+    date: "2024-06-17"
+    description: "zkSync ZK token airdrop to 695,232 wallets - 3.675B tokens"
+    chains: ["zksync_era"]
+    intensity: 8.5
+    relevance: "ecosystem"
+    source_url: "https://docs.zknation.io/zk-token/zk-airdrop"
+
+major_campaigns:
+  base_onchain_summer:
+    date: "2023-08-09"
+    description: "Base Onchain Summer campaign launch - major user acquisition drive"
+    chains: ["base"]
+    intensity: 7.5
+    relevance: "chain_specific"
+    source_url: "https://base.mirror.xyz/QOHev4zxGJOtsHpobhRxb7-MgVRSX9UCBBHBEpVVCzc"
+
+  starknet_strk_token_launch:
+    date: "2024-02-14"
+    description: "Starknet STRK token distribution to community - 500M tokens claimed by 600k users"
+    chains: ["starknet"]
+    intensity: 7.5
+    relevance: "ecosystem"
+    source_url: "https://www.starknet.io/blog/2024-roundup/"
+
+  starknet_staking_launch:
+    date: "2024-11-26"
+    description: "Starknet staking phase 1 launch - 100M+ STRK staked"
+    chains: ["starknet"]
+    intensity: 6.5
+    relevance: "chain_specific"
+    source_url: "https://www.starknet.io/blog/2024-roundup/"
+
+bridge_events:
+  arbitrum_nova_launch:
+    date: "2022-08-09"
+    description: "Arbitrum Nova launch - AnyTrust chain for social and gaming"
+    chains: ["arbitrum_nova"]
+    intensity: 6.0
+    relevance: "chain_specific"
+    source_url: "https://medium.com/offchainlabs/introducing-nova-arbitrum-anytrust-mainnet-is-open-for-developers-9a54692f345e"
+
+  optimism_op_stack_launch:
+    date: "2022-10-25"
+    description: "OP Stack announcement - framework for building L2s (Superchain vision)"
+    chains: ["optimism"]
+    intensity: 7.0
+    relevance: "ecosystem"
+    source_url: "https://optimism.mirror.xyz/"
