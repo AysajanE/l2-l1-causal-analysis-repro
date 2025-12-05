@@ -1,0 +1,63 @@
+# Forbidden Phrases for Manuscript CI Checks
+# Item 10: Calibrated Claims Implementation
+# Created: 2025-10-18
+# Purpose: Prevent regression to uncalibrated language in manuscript
+
+# CRITICAL: These phrases must NOT appear in the main manuscript text
+# (sections 01-06_*.tex, abstract.tex)
+
+## 1. Incorrect welfare estimates (old inflated numbers)
+$97.35 billion
+$97.35B
+$79.87B
+$118.45B
+$710.56 million per day
+$711 million
+$10.6 trillion
+$10.6T
+$96.50 billion
+$96.5B
+
+## 2. Overstated causal language for base fee ITS
+definitive affirmative
+definitively demonstrates
+conclusive evidence
+statistically significant effect on base fees
+significant reduction in base fees
+# Note: "significant" is OK for S_t (scarcity) which has p<0.001
+
+## 3. Missing temporal scope qualifiers
+# These should always be qualified with "137-day subset" or "14.41% coverage"
+welfare gains over the full period
+complete pre-Dencun analysis
+comprehensive welfare assessment
+full 950-day period analyzed
+
+## 4. Unqualified exploratory analyses
+# Event study and RDiT should always be marked as "exploratory" or "validation"
+event study demonstrates
+event study proves
+RDiT confirms causal
+RDiT establishes
+
+## 5. Missing precision caveats for ITS
+# Base fee ITS should always mention "limited precision" or "p=0.17"
+ITS significantly reduces
+ITS demonstrates significant
+base fee effect is significant
+# Exception: scarcity (S_t) IS significant
+
+## ALLOWED PHRASES (for reference):
+# - $79.6 million (base-only) over 137-day subset
+# - $2.43 million per day
+# - suggestive evidence (for base fee ITS)
+# - directional negative effect
+# - limited precision (p=0.17)
+# - strong mechanistic support (for S_t)
+# - exploratory analysis (for event study/RDiT)
+# - 14.41% of available pre-Dencun days
+# - confirmatory ITS analysis
+
+## CI CHECK COMMAND:
+# grep -f forbidden_phrases.txt sections/0[1-6]_*.tex sections/abstract.tex
+# Should return NO matches if compliant

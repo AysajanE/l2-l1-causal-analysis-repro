@@ -1,0 +1,74 @@
+% Section 3: Data & Variables
+
+We construct a daily UTC panel that tracks Ethereum Layer-1 congestion, Layer-2 user activity, and macro-demand proxies across the London, Merge, and Dencun upgrades. Each observation aggregates raw L1 and L2 transaction traces, blob-fee data, off-chain market indicators, and a curated event list into the variables summarized in Table~\ref{tab:variables}. The unit of analysis is a calendar day, and unless stated otherwise all quantities are computed on this daily grid.
+
+\subsection{Sample Window, Regimes, and Panel Snapshot}
+\label{sec:data:window}
+
+Our daily sample runs from 5~August~2021 (London / EIP-1559 activation) through 31~December~2024, yielding $N=1{,}245$ UTC days. It spans three protocol regimes: \textit{London} (406 days), \textit{Merge} (545 days), and the post-Dencun blob era (294 days). Figure~\ref{fig:eda_overview} plots $A^{clean}_t$, the congestion outcomes, and the demand factor across the four labeled regimes (pre-London, London$\rightarrow$Merge, Merge$\rightarrow$Dencun, post-Dencun); shaded bands mark the upgrade dates that define the regime indicators $\mathbf{R}_t$.
+
+Unless noted otherwise, the pre-Dencun (London+Merge; $N=951$) window is the confirmatory window because $A^{clean}_t$ still traverses a wide portion of $[0,1]$. The blob-era post-Dencun window is retained for descriptive context, as $A^{clean}_t$ is already near saturation (Section~\ref{sec:results:regimes}). Descriptive figures and summary statistics continue to use the full $N=1{,}245$-day panel. Table~\ref{tab:variables} summarizes the key variables and data sources; extended descriptive and treatment-support diagnostics appear in Appendix~\ref{sec:appendix:diagnostics_summary}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/eda_regime_overview.pdf}
+    \caption{Regime-Aware Time Series Overview}
+    \label{fig:eda_overview}
+    \begin{minipage}{\textwidth}
+        \small
+        \textit{Note:} Daily UTC aggregates for treatment ($A^{clean}_t$) and congestion outcomes ($\log C^{fee}$, utilization $u_t$, scarcity $S_t$). Shaded bands mark London (2021-08-05), Merge (2022-09-15), and Dencun (2024-03-13); lines show 7-day rolling medians with a log scale for congestion metrics.
+    \end{minipage}
+\end{figure}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Key Variables and Data Sources}
+    \label{tab:variables}
+    \begin{tabular}{p{0.11\textwidth}p{0.13\textwidth}p{0.30\textwidth}p{0.28\textwidth}p{0.14\textwidth}}
+        \toprule
+        Role & Symbol & Description & Construction (brief) & Source(s) \\
+        \midrule
+        Treatment & $A^{clean}_t$ & Posting-clean L2 adoption share & Daily share of L2 end-user tx in total L1+L2 user tx; L2$\rightarrow$L1 postings removed from both sides & L1/L2 traces; rollup inbox registry \\
+        Outcome & $\log C^{fee}_t$ & Log median base fee & Log of median EIP-1559 base fee (Gwei) across blocks in day $t$ & Ethereum mainnet block traces; public fee dashboards \\
+        Outcome & $u_t$ & Block utilization & Median gas used divided by gas limit across blocks in day $t$ & Ethereum mainnet block traces \\
+        Outcome & $S_t$ & Scarcity index & Composite (base + tip + blob) fee index relative to smoothed demand benchmark (Appendix~\ref{sec:appendix:measurement_summary}) & Ethereum execution and blob-fee data \\
+        Control & $D^{*}_t$ & Demand factor & First PC of ETH returns, CEX volumes, realized volatility, search intensity, and net stablecoin issuance; standardized & Off-chain market data; Google Trends \\
+        Control & $\mathbf{R}_t$ & Regime indicators & Dummies for London, Merge, post-Dencun regimes & Protocol upgrade calendar \\
+        Control & $\mathbf{Cal}_t$ & Calendar dummies & UTC weekend, month-end, and quarter-turn indicators & Calendar \\
+        Control & $\mathbf{Shock}_t$ & Targeted shock dummies & Event flags for mega NFT mints, sequencer outages, airdrop claim days, market-stress episodes (Table~\ref{tab:targeted_events}) & Curated event catalog \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Treatment: Posting-Clean Adoption Share}
+\label{sec:data:treatment}
+
+We define the treatment as the \textbf{posting-clean adoption share},
+\begin{equation*}
+	    A^{clean}_t = \frac{\text{L2 user transactions}_t}{\text{L2 user transactions}_t + \text{L1 user transactions}_t},
+\end{equation*}
+We identify posting transactions via a point-in-time join against the rollup inbox registry. These postings are removed from both numerator and denominator before computing the share, so $A^{clean}_t$ captures end-user execution rather than sequencer posting burden. The construction is applied consistently across the set of canonical Ethereum rollups tracked in our registry, and all quantities are aggregated to the daily UTC grid. The rollup set includes Arbitrum, Optimism, Base, zkSync, Starknet, Linea, and Scroll; Appendix~\ref{sec:appendix:treatment_construction} documents the chain list and registry mappings. By stripping posting transactions from the share, we avoid conditioning on the L2 posting load that sits on the $A^{clean}_t \rightarrow P_t \rightarrow C_t$ path; Section~\ref{sec:methods:identification} discusses this mediator logic in detail.
+
+\subsection{Outcomes and Congestion Metrics}
+\label{sec:data:outcomes}
+
+The primary outcome is the log median EIP-1559 base fee, $\log C^{fee}_t = \log(\text{median base fee}_t)$, computed from canonical Ethereum JSON-RPC traces and cross-checked against public explorers, mirroring the construction in \citet{LiuEtAl2022EIP1559}. For each day $t$ we take the median base fee across blocks and then apply the natural logarithm.
+
+We track two congestion secondary outcomes. Block utilization $u_t$ is the median ratio of gas used to the regime-specific gas limit across blocks in day $t$, $u_t = \mathrm{median}_{b \in t}\left( \tfrac{\text{gas used}_b}{\text{gas limit}_b} \right)$. The harmonized scarcity index $S_t$ combines base fees, priority tips, and blob fees into a single congestion proxy by scaling total per-unit fees relative to a smoothed execution-demand benchmark; the full construction (smoothing window, regime-aware components, and units) is documented in Appendix~\ref{sec:appendix:measurement_summary}.
+
+Figure~\ref{fig:eda_overview} shows that median fees fall sharply after Dencun while utilization and scarcity compress, consistent with blob space easing congestion pressure. All three outcomes are winsorized at the 0.5\% tails and share the same $N=1{,}245$ daily coverage as the treatment.
+
+\subsection{Controls and Auxiliary Inputs}
+\label{sec:data:controls}
+
+We construct three groups of auxiliary variables---all defined on the same daily UTC grid as the treatment and outcomes---that will later enter the adjustment set $X_t$:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Demand factor ($D^*_t$).} We condense ETH log returns, centralized-exchange (CEX) log volumes, realized volatility, Google search intensity, and net stablecoin issuance into the first principal component, standardized to mean zero and unit variance. These inputs are purely off-chain and are detailed in the measurement appendix.
+    \item \textbf{Regime and calendar indicators ($\mathbf{R}_t, \mathbf{Cal}_t$).} Regime dummies flag the London, Merge, and post-Dencun eras. Calendar dummies mark weekends, month-ends, and quarter turns to capture deterministic seasonality documented in exploratory diagnostics.
+    \item \textbf{Targeted event dummies ($\mathbf{Shock}_t$).} A curated event catalog covers mega NFT mints, sequencer outages, notable airdrop claim days, and major market-stress episodes; the full list appears in Table~\ref{tab:targeted_events}.
+\end{itemize}
+All days and calendar indicators are defined in UTC to match the aggregation grid. Together these variables form the adjustment set $\{D^*_t, \mathbf{R}_t, \mathbf{Cal}_t, \mathbf{Shock}_t\}$ used in the ITS-ECM specifications summarized in Section~\ref{sec:methodology} and listed in Table~\ref{tab:variables}.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Summary.} Daily UTC panel (5~August~2021--31~December~2024; $N=1{,}245$) combining: (i) L1 and L2 on-chain traces for the posting-clean adoption share $A^{clean}_t$; (ii) EIP-1559 fee and gas-usage data for congestion metrics $(\log C^{fee}_t, u_t, S_t)$; and (iii) off-chain market and search data, protocol calendars, and curated events for the controls $\{D^*_t, \mathbf{R}_t, \mathbf{Cal}_t, \mathbf{Shock}_t\}$. The pre-Dencun (London+Merge; $N=951$) window is the primary window with wide treatment support; post-Dencun days are retained descriptively.
+\end{itemize}

@@ -1,0 +1,444 @@
+% Bibliography for Project A: Total Effects Study
+% All entries verified and complete as of 2025-10-13.
+
+% EIPs and Ethereum Core Documentation
+@misc{EthereumFoundation2021,
+  author = {Buterin, Vitalik and Conner, Eric and Dudley, Rick and Slipper, Matthew and Norden, Ian and Bakhta, Abdelhamid},
+  title = {{EIP-1559: Fee Market Change for ETH 1.0 Chain}},
+  year = {2021},
+  howpublished = {\url{https://eips.ethereum.org/EIPS/eip-1559}},
+  note = {Accessed: 2024. London hardfork implementing base fee mechanism}
+}
+
+@misc{eip4844,
+  author = {Buterin, Vitalik and Ansgar Dietrichs and others},
+  title = {{EIP-4844: Shard Blob Transactions}},
+  year = {2024},
+  howpublished = {\url{https://eips.ethereum.org/EIPS/eip-4844}},
+  note = {Accessed: 2024}
+}
+
+% Rollup and L2 Documentation
+@misc{l2beat,
+  author = {{L2Beat}},
+  title = {{L2Beat: Ethereum Layer 2 Analytics}},
+  year = {2024},
+  howpublished = {\url{https://l2beat.com}},
+  note = {Accessed: 2024}
+}
+
+@misc{arbitrum_docs,
+  author = {{Offchain Labs}},
+  title = {{Arbitrum Documentation}},
+  year = {2024},
+  howpublished = {\url{https://docs.arbitrum.io}},
+  note = {Accessed: 2024}
+}
+
+@misc{optimism_docs,
+  author = {{Optimism Foundation}},
+  title = {{Optimism Documentation}},
+  year = {2024},
+  howpublished = {\url{https://docs.optimism.io}},
+  note = {Accessed: 2024}
+}
+
+% Causal Inference Methods
+
+% === CAUSAL FOUNDATIONS (Priority 1) ===
+
+@article{Rubin1974,
+  author = {Rubin, Donald B.},
+  title = {{Estimating Causal Effects of Treatments in Randomized and Nonrandomized Studies}},
+  journal = {Journal of Educational Psychology},
+  volume = {66},
+  number = {5},
+  pages = {688--701},
+  year = {1974},
+  doi = {10.1037/h0037350}
+}
+
+@article{Rubin1980,
+  author = {Rubin, Donald B.},
+  title = {{Randomization Analysis of Experimental Data: The Fisher Randomization Test Comment}},
+  journal = {Journal of the American Statistical Association},
+  volume = {75},
+  number = {371},
+  pages = {591--593},
+  year = {1980},
+  doi = {10.2307/2287653},
+  note = {Stable Unit Treatment Value Assumption (SUTVA)}
+}
+
+@article{Rosenbaum1983,
+  author = {Rosenbaum, Paul R. and Rubin, Donald B.},
+  title = {{The Central Role of the Propensity Score in Observational Studies for Causal Effects}},
+  journal = {Biometrika},
+  volume = {70},
+  number = {1},
+  pages = {41--55},
+  year = {1983},
+  doi = {10.1093/biomet/70.1.41}
+}
+
+@article{Pearl1995,
+  author = {Pearl, Judea},
+  title = {{Causal Diagrams for Empirical Research}},
+  journal = {Biometrika},
+  volume = {82},
+  number = {4},
+  pages = {669--688},
+  year = {1995},
+  doi = {10.1093/biomet/82.4.669},
+  note = {Introduces the back-door criterion}
+}
+
+@article{Pearl2014,
+  author = {Pearl, Judea},
+  title = {{Interpretation and Identification of Causal Mediation}},
+  journal = {Psychological Methods},
+  volume = {19},
+  number = {4},
+  pages = {459--481},
+  year = {2014},
+  doi = {10.1037/a0036434},
+  note = {Post-treatment bias and mediation analysis}
+}
+
+@book{ImbensRubin2015,
+  author = {Imbens, Guido W. and Rubin, Donald B.},
+  title = {{Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction}},
+  publisher = {Cambridge University Press},
+  year = {2015},
+  isbn = {978-0521885881},
+  doi = {10.1017/CBO9781139025751}
+}
+
+@article{Imbens2022,
+  author = {Imbens, Guido W.},
+  title = {{Causality in Econometrics: Choice vs. Chance}},
+  journal = {Econometrica},
+  volume = {90},
+  number = {6},
+  pages = {2541--2566},
+  year = {2022},
+  doi = {10.3982/ECTA21204},
+  note = {Nobel Prize lecture; convergence of causal inference methods}
+}
+
+% === ECONOMETRICS METHODS (Priority 2) ===
+
+@article{Angrist2010,
+  author = {Angrist, Joshua D. and Pischke, J{\"o}rn-Steffen},
+  title = {{The Credibility Revolution in Empirical Economics: How Better Research Design Is Taking the Con out of Econometrics}},
+  journal = {Journal of Economic Perspectives},
+  volume = {24},
+  number = {2},
+  pages = {3--30},
+  year = {2010},
+  doi = {10.1257/jep.24.2.3}
+}
+
+@book{AngristPischke2009,
+  author = {Angrist, Joshua D. and Pischke, J{\"o}rn-Steffen},
+  title = {{Mostly Harmless Econometrics: An Empiricist's Companion}},
+  publisher = {Princeton University Press},
+  year = {2009},
+  isbn = {978-0691120355},
+  note = {Chapter 3 on bad controls}
+}
+
+@book{Wooldridge2010,
+  author = {Wooldridge, Jeffrey M.},
+  title = {{Econometric Analysis of Cross Section and Panel Data}},
+  edition = {2nd},
+  publisher = {MIT Press},
+  year = {2010},
+  isbn = {978-0262232586},
+  note = {Chapter 17 on semi-elasticity interpretation}
+}
+
+% === ADDITIONAL CAUSAL/ECONOMETRIC METHODS ===
+
+@article{CinelliHazlettRoth2020,
+  author = {Cinelli, Carlos and Hazlett, Chad and Roth, Jonathan},
+  title = {{crashcourse: Causal Analysis in R: Sensitivity, Robustness, and Good Controls}},
+  journal = {Journal of Statistical Software},
+  year = {2020},
+  note = {Bad controls and sensitivity analysis; preprint available}
+}
+
+@article{deChaisemartinDHaultfoeuille2020,
+  author = {de Chaisemartin, Cl\'{e}ment and D'Haultf\oe{}uille, Xavier},
+  title = {{Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects}},
+  journal = {American Economic Review},
+  volume = {110},
+  number = {9},
+  pages = {2964--2996},
+  year = {2020},
+  doi = {10.1257/aer.20181169}
+}
+
+@article{hausman2018,
+  author = {Hausman, Catherine and Rapson, David S.},
+  title = {{Regression Discontinuity in Time: Considerations for Empirical Applications}},
+  journal = {Annual Review of Resource Economics},
+  volume = {10},
+  pages = {533--552},
+  year = {2018},
+  doi = {10.1146/annurev-resource-121517-033306}
+}
+
+@article{brodersen2015,
+  author = {Brodersen, Kay H. and Gallusser, Fabian and Koehler, Jim and Remy, Nicolas and Scott, Steven L.},
+  title = {{Inferring causal impact using Bayesian structural time-series models}},
+  journal = {Annals of Applied Statistics},
+  volume = {9},
+  number = {1},
+  pages = {247--274},
+  year = {2015},
+  doi = {10.1214/14-AOAS788}
+}
+
+@book{Pearl2009,
+  author = {Pearl, Judea},
+  title = {{Causality: Models, Reasoning, and Inference}},
+  edition = {2nd},
+  publisher = {Cambridge University Press},
+  year = {2009},
+  isbn = {978-0521895606}
+}
+
+% Time Series Econometrics
+@article{NeweyWest1987,
+  author = {Newey, Whitney K. and West, Kenneth D.},
+  title = {{A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix}},
+  journal = {Econometrica},
+  volume = {55},
+  number = {3},
+  pages = {703--708},
+  year = {1987},
+  doi = {10.2307/1913610}
+}
+
+@article{Kennedy1981,
+  author = {Kennedy, Peter E.},
+  title = {{Estimation with Correctly Interpreted Dummy Variables in Semilogarithmic Equations}},
+  journal = {American Economic Review},
+  volume = {71},
+  number = {4},
+  pages = {801},
+  year = {1981},
+  note = {Semi-elasticity interpretation for log-transformed outcomes}
+}
+
+@book{hamilton1994,
+  author = {Hamilton, James D.},
+  title = {{Time Series Analysis}},
+  publisher = {Princeton University Press},
+  year = {1994},
+  isbn = {978-0691042893},
+  note = {Classic reference for time series econometrics}
+}
+
+@book{harvey1990,
+  author = {Harvey, Andrew C.},
+  title = {{Forecasting, Structural Time Series Models and the Kalman Filter}},
+  publisher = {Cambridge University Press},
+  year = {1990},
+  isbn = {978-0521405737}
+}
+
+% Interrupted Time Series and Quasi-Experimental Methods
+@article{bernal2017,
+  author = {Bernal, James Lopez and Cummins, Steven and Gasparrini, Antonio},
+  title = {{Interrupted Time Series Regression for the Evaluation of Public Health Interventions: A Tutorial}},
+  journal = {International Journal of Epidemiology},
+  volume = {46},
+  number = {1},
+  pages = {348--355},
+  year = {2017},
+  doi = {10.1093/ije/dyw098}
+}
+
+@article{penfold2013,
+  author = {Penfold, Robert B. and Zhang, Fang},
+  title = {{Use of Interrupted Time Series Analysis in Evaluating Health Care Quality Improvements}},
+  journal = {Academic Pediatrics},
+  volume = {13},
+  number = {6 Suppl},
+  pages = {S38--S44},
+  year = {2013},
+  doi = {10.1016/j.acap.2013.08.002}
+}
+
+% Blockchain and Cryptocurrency Economics
+
+% === FINANCIAL ECONOMETRICS & VOLATILITY ===
+
+@article{AndersenEtAl2003,
+  author = {Andersen, Torben G. and Bollerslev, Tim and Diebold, Francis X. and Labys, Paul},
+  title = {{Modeling and Forecasting Realized Volatility}},
+  journal = {Econometrica},
+  volume = {71},
+  number = {2},
+  pages = {579--625},
+  year = {2003},
+  doi = {10.1111/1468-0262.00418},
+  note = {Foundational paper on realized volatility measurement}
+}
+
+@article{Da2011,
+  author = {Da, Zhi and Engelberg, Joseph and Gao, Pengjie},
+  title = {{In Search of Attention}},
+  journal = {Journal of Finance},
+  volume = {66},
+  number = {5},
+  pages = {1461--1499},
+  year = {2011},
+  doi = {10.1111/j.1540-6261.2011.01679.x},
+  note = {Google Trends as proxy for investor attention}
+}
+
+% === BLOCKCHAIN EMPIRICS ===
+
+@article{LiuEtAl2022,
+  author = {Liu, Yukun and Tsyvinski, Aleh and Wu, Xi},
+  title = {{Common Risk Factors in Cryptocurrency}},
+  journal = {Journal of Finance},
+  volume = {77},
+  number = {2},
+  pages = {1133--1177},
+  year = {2022},
+  doi = {10.1111/jofi.13119},
+  note = {On-chain stablecoin flows and crypto factor analysis}
+}
+
+@inproceedings{LiuEtAl2022EIP1559,
+  author = {Liu, Yulin and Lu, Yuxuan and Nayak, Kartik and Zhang, Fan and Zhang, Luyao and Zhao, Yinhong},
+  title = {{Empirical Analysis of EIP-1559: Transaction Fees, Waiting Times, and Consensus Security}},
+  booktitle = {Proceedings of the ACM Conference on Computer and Communications Security},
+  pages = {2099--2113},
+  year = {2022},
+  doi = {10.1145/3548606.3559341},
+  note = {Empirical evaluation of the EIP-1559 fee mechanism}
+}
+
+@article{GogolEtAl2024L2Arbitrage,
+  author = {Gogol, Krzysztof and Messias, Johnnatan and Miori, Deborah and Tessone, Claudio J. and Livshits, Benjamin},
+  title = {{Layer-2 Arbitrage: An Empirical Analysis of Swap Dynamics and Price Disparities on Rollups}},
+  journal = {arXiv preprint},
+  year = {2024},
+  eprint = {2406.02172},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CR},
+  note = {Empirical study of arbitrage and pricing on Ethereum rollups}
+}
+
+@article{WangCrapisMoallemi2025Posting,
+  author = {Wang, Shouqiao and Crapis, Davide and Moallemi, Ciamac C.},
+  title = {{A Framework for Combined Transaction Posting and Pricing for Layer-2 Blockchains}},
+  journal = {arXiv preprint},
+  year = {2025},
+  eprint = {2505.19556},
+  archivePrefix = {arXiv},
+  primaryClass = {q-fin.TR},
+  note = {Dynamic model of L2 posting and pricing under L1 gas volatility}
+}
+
+% Data Sources
+@misc{BigQueryEthereum,
+  author = {{Google Cloud}},
+  title = {{BigQuery Public Datasets: Ethereum}},
+  year = {2024},
+  howpublished = {\url{https://console.cloud.google.com/marketplace/product/bigquery-public-data/crypto-ethereum-blockchain}},
+  note = {Accessed: 2024}
+}
+
+@misc{coingecko,
+  author = {{CoinGecko}},
+  title = {{CoinGecko Cryptocurrency Price API}},
+  year = {2024},
+  howpublished = {\url{https://www.coingecko.com/en/api}},
+  note = {Accessed: 2024}
+}
+
+@misc{dune_analytics,
+  author = {{Dune Analytics}},
+  title = {{Dune: Blockchain Analytics Platform}},
+  year = {2024},
+  howpublished = {\url{https://dune.com}},
+  note = {Accessed: 2024}
+}
+
+@misc{google_trends,
+  author = {{Google}},
+  title = {{Google Trends}},
+  year = {2024},
+  howpublished = {\url{https://trends.google.com}},
+  note = {Accessed: 2024}
+}
+
+% Statistical Software
+@manual{statsmodels,
+  author = {Seabold, Skipper and Perktold, Josef},
+  title = {{Statsmodels: Econometric and Statistical Modeling with Python}},
+  year = {2010},
+  howpublished = {\url{https://www.statsmodels.org}}
+}
+
+@manual{bsts_package,
+  author = {Scott, Steven L.},
+  title = {{bsts: Bayesian Structural Time Series}},
+  year = {2023},
+  note = {R package version 0.9.10},
+  howpublished = {\url{https://CRAN.R-project.org/package=bsts}}
+}
+
+@software{python,
+  author = {{Python Software Foundation}},
+  title = {{Python Programming Language}},
+  year = {2024},
+  howpublished = {\url{https://www.python.org}},
+  version = {3.11}
+}
+
+@software{pandas,
+  author = {{pandas development team}},
+  title = {{pandas: Powerful Data Analysis Tools for Python}},
+  year = {2024},
+  howpublished = {\url{https://pandas.pydata.org}},
+  doi = {10.5281/zenodo.3509134}
+}
+
+@software{numpy,
+  author = {Harris, Charles R. and others},
+  title = {{Array Programming with NumPy}},
+  journal = {Nature},
+  volume = {585},
+  pages = {357--362},
+  year = {2020},
+  doi = {10.1038/s41586-020-2649-2}
+}
+
+@software{matplotlib,
+  author = {Hunter, J. D.},
+  title = {{Matplotlib: A 2D Graphics Environment}},
+  journal = {Computing in Science \& Engineering},
+  volume = {9},
+  number = {3},
+  pages = {90--95},
+  year = {2007},
+  doi = {10.1109/MCSE.2007.55}
+}
+
+@software{seaborn,
+  author = {Waskom, Michael L.},
+  title = {{seaborn: Statistical Data Visualization}},
+  journal = {Journal of Open Source Software},
+  volume = {6},
+  number = {60},
+  pages = {3021},
+  year = {2021},
+  doi = {10.21105/joss.03021}
+}

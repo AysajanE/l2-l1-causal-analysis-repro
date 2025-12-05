@@ -1,6 +1,10 @@
 # L1–L2 Causal Influence Analysis (Reproducibility Package)
 
-This repository contains the minimal, outlet-agnostic materials to reproduce the main results of the study on how Layer-2 scaling affects Ethereum Layer-1 congestion.
+This repository contains the minimal, outlet-agnostic materials to reproduce the main results of the study on how Layer-2 scaling affects Ethereum Layer-1 congestion. Outlet-specific bundles are tracked via Git tags/releases.
+
+## Outlet map
+- **arXiv (Dec 2025)**: tag `v1.1.0-arxiv` (candidate). Sources live in `releases/arxiv-2025-12/` (full LaTeX + figures) and reuse the shipped `data/core_panel_v1/` panel.
+- **Management Science submission (Oct 2025)**: tag `v1.0.2-ms` (existing). Shares the same data; manuscript itself is in the sister MS outlet repo.
 
 ## What’s included
 - Small derived datasets (core panel, processed master panels, gas-weighted fee summaries, ETH prices).
@@ -21,8 +25,8 @@ bash scripts/fetch_raw_data.sh
 
 ## Data availability
 - Concept DOI (all versions): 10.5281/zenodo.17665906
-- Latest version (v1.0.2): 10.5281/zenodo.17665980
-  - Contains: `core_panel_v1.parquet`, BSTS artifacts, raw chain parquet files, Dune batches bundle, Nansen bundle.
+- Latest released data bundle: v1.0.2 (10.5281/zenodo.17665980) — raw blocks/tx, Dune/Nansen bundles, BSTS model objects, `core_panel_v1.parquet`.
+- Forthcoming arXiv bundle: v1.1.0-arxiv (will be minted from this repo tag; reuses the same core panel, adds arXiv LaTeX sources).
 - See `docs/DATA_AVAILABILITY.md` for the full inclusion/exclusion plan.
 
 ## Citation
@@ -40,6 +44,8 @@ Aysajan Eziz. (2025). L1–L2 Causal Influence Analysis (Reproducibility Package
 - `make fetch` – download raw/heavy bundles from Zenodo v1.0.2 (with checksums)
 - `make smoke` – run minimal smoke tests (core panel shape/columns and key result files)
 - `make verify` – same as smoke alias
+- `make reproduce-arxiv` – validate arXiv bundle (smoke tests + LaTeX presence)
+- `make latex-arxiv` – compile the arXiv manuscript from `releases/arxiv-2025-12/manuscript` (requires TeX toolchain)
 
 ## Tests
 `pytest -q tests/smoke`

@@ -4,7 +4,7 @@
   "access_right": "open",
   "license": "mit",
   "language": "eng",
-  "version": "v1.0.2",
+  "version": "v1.1.0-arxiv-candidate",
   "description": "Reproducibility bundle for the study on the causal influence of Layer-2 scaling solutions on Ethereum Layer-1 congestion. Includes small derived datasets and pointers to Zenodo-hosted raw/heavy artifacts.",
   "creators": [
     {

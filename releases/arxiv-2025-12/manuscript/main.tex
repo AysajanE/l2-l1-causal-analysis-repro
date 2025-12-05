@@ -1,0 +1,192 @@
+\documentclass[12pt,a4paper]{article}
+
+% ===========================
+% Package Imports
+% ===========================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}  % final mode - embed all figures
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{mdframed}
+\usepackage{hyperref}
+\def\UrlBreaks{\do\/\do\_\do\-}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{dcolumn}
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage{afterpage}
+\usepackage{listings}
+\usepackage{adjustbox}
+\usepackage{etoolbox}
+\usepackage{seqsplit}
+\usepackage{marginnote}
+
+% ===========================
+% Theorem Environments
+% ===========================
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+
+% ===========================
+% Hyperref Configuration
+% ===========================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Do Layer-2s Decongest Ethereum? Regime-Aware Causal Evidence from 2021--2024},
+    pdfauthor={Aysajan Eziz},
+    pdfsubject={Economic analysis of Layer-2 scaling solutions' impact on Ethereum Layer-1 blockchain congestion},
+    pdfkeywords={Ethereum; Layer-2 rollups; transaction fees; congestion; causal time series},
+    pdfcreator={LaTeX with pdflatex},
+    pdfproducer={pdfTeX}
+}
+
+% ===========================
+% Mathematical Notation
+% ===========================
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\given}{\mid}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareUnicodeCharacter{03B2}{\ensuremath{\beta}}
+\newif\ifmarginbadges
+\marginbadgesfalse
+\newcommand{\marginbadge}[1]{}
+\DeclareRobustCommand{\confirmatorybadge}{}
+\DeclareRobustCommand{\exploratorybadge}{}
+\pdfstringdefDisableCommands{%
+  \def\confirmatorybadge{}%
+  \def\exploratorybadge{}%
+}
+\newcommand{\codepath}[1]{\texttt{\seqsplit{#1}}}
+\newcommand{\codehash}[1]{\texttt{\seqsplit{#1}}}
+
+% ===========================
+% Table and Figure Formatting
+% ===========================
+\captionsetup{font=small,labelfont=bf}
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.2}
+\BeforeBeginEnvironment{tabular}{\begin{adjustbox}{max width=\textwidth}}
+\AfterEndEnvironment{tabular}{\end{adjustbox}}
+\AtBeginEnvironment{tabular}{\small}
+
+% ===========================
+% Line Spacing
+% ===========================
+\onehalfspacing
+\setlength{\emergencystretch}{1.5em}
+\sloppy
+
+% ===========================
+% Bibliography Style
+% ===========================
+\bibliographystyle{apalike}
+
+% ===========================
+% Document Information
+% ===========================
+\title{\textbf{Do Layer-2s Decongest Ethereum? Regime-Aware Causal Evidence from 2021--2024}}
+\author{
+    Aysajan Eziz\thanks{Ivey Business School, aeziz@ivey.ca}\\
+    \textit{Western University, Canada}
+}
+\date{}
+
+\renewcommand{\abstractname}{Abstract}
+\setcounter{tocdepth}{2}
+
+% ===========================
+% Document Begin
+% ===========================
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords:} Ethereum; Layer-2 rollups; transaction fees; congestion; causal time series
+
+\vspace{1em}
+\noindent\textbf{JEL Classification:} C22, C54, L86, O33
+
+\clearpage
+
+% ===========================
+% Main Content
+% ===========================
+
+\section{Introduction}
+\label{sec:introduction}
+\input{sections/01_introduction}
+
+\section{Related Work}
+\label{sec:literature}
+\input{sections/02_literature}
+
+\section{Data and Variables}
+\label{sec:data}
+\input{sections/03_data_variables}
+
+\section{Methodology}
+\label{sec:methodology}
+\input{sections/04_methodology}
+
+\section{Results}
+\label{sec:results}
+\input{sections/05_results}
+
+\section{Discussion}
+\label{sec:discussion}
+\input{sections/06_discussion}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/07_conclusion}
+
+\section*{Acknowledgments}
+This research benefited from support provided by the Ethereum Foundation academic grant.
+
+\clearpage
+\bibliography{references}
+
+\clearpage
+\appendix
+
+\section{Data and Code Availability}
+\label{sec:availability}
+\input{sections/appendix_a_data_availability}
+
+\input{sections/appendix_technical}
+
+\end{document}

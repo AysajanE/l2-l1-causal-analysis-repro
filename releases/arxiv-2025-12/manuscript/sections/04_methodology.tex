@@ -1,0 +1,106 @@
+% Section 4: Methodology
+
+\noindent\textbf{Method overview.} We study how the daily posting-clean Layer-2 adoption share $A_t^{clean}$ affects Ethereum Layer-1 congestion using an interrupted time-series (ITS) design. The main estimand is a semi-elasticity: the percentage change in the typical user's base fee for a 1 percentage point rise in $A_t^{clean}$, which we report per 10 percentage points to match observed adoption swings. Our confirmatory analysis uses a levels specification and a corresponding error--correction model (ECM) for short-run dynamics with a fixed outcome family and multiple-testing adjustments; exploratory extensions reuse the same adjustment set but relax some of these constraints.
+
+\subsection{Causal Estimand and DAG}
+\label{sec:methods:identification}
+
+\subsubsection{Estimand in plain language}
+Formally, our main estimand is a semi-elasticity: the percentage change in the log base fee associated with a 1 percentage point increase in $A_t^{clean}$, conditional on macro-demand, protocol regime, and calendar effects. Reporting effects for a 10 percentage point change aligns the scale with typical observed shifts in L2 market share. Economically, this measures how much a ``typical'' user's base fee responds to a shift in aggregate L2 adoption, holding the broader environment fixed.
+
+Treatment is $A_t^{clean}$; the confirmatory outcome family is $C_t=(\log C^{fee}_t,\ \log S_t)$, with utilization $u_t$ reported as exploratory. The adjustment vector $X_t=\{D_t^*,\mathbf{R}_t,\mathbf{Cal}_t,\mathbf{Shock}_t\}$ matches the covariates introduced in Section~\ref{sec:data}. For brevity in figures we occasionally write $A_t$; throughout this section $A_t \equiv A_t^{clean}$, the posting-clean adoption share defined in Section~\ref{sec:data:treatment}. Construction details, PCA loadings, and validation diagnostics remain in the methodology appendix and the public replication package (Appendix~\ref{sec:availability}).
+
+\subsubsection{DAG and identification logic}
+
+Figure~\ref{fig:dag} summarizes the causal structure we assume.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/dag_causal_structure.pdf}
+\caption{Directed Acyclic Graph for Total-Effect Identification}
+\label{fig:dag}
+\begin{minipage}{\textwidth}
+\small
+\textit{Note:} The DAG encodes treatment $A^{clean}_t$ (posting-clean L2 adoption share; labeled $A_t$ in the graphic for brevity), outcomes $C_t$ (congestion metrics), confounders $D_t^*$ (latent demand) and $U_t$ (protocol regimes), mediator $P_t$ (posting load), and dynamic feedback $C_{t-1}$. Conditioning on $\{D_t^*, U_t, \mathbf{Cal}_t, \mathbf{Shock}_t\}$ blocks the main back-door paths while the mediator-exclusion principle keeps posting activity out of the control set. Dynamic feedback is addressed via deterministic trends and robustness checks.
+\end{minipage}
+\end{figure}
+
+Concretely, $A^{clean}_t$ is the daily posting-clean adoption share from Section~\ref{sec:data:treatment}, $C_t$ stacks the congestion metrics introduced in Section~\ref{sec:data:outcomes}, $D_t^*$ is the off-chain latent demand factor in Section~\ref{sec:data:controls}, $U_t$ corresponds to the regime indicators $\mathbf{R}_t$ in Section~\ref{sec:data:window}, and $P_t$ denotes the posting load on the $A_t^{\text{clean}}\!\rightarrow\!P_t\!\rightarrow\!C_t$ path.
+
+Intuitively, both adoption and congestion respond to underlying demand shocks—ETH price moves, DeFi/NFT cycles, and macro news—summarized by $D_t^*$ together with regime, calendar, and targeted-shock indicators. Higher adoption raises posting load $P_t$ through data-availability transactions, which in turn pushes up congestion $C_t$. Because our target is the \emph{total} effect of adoption on congestion, we adjust for these common shocks while deliberately leaving the $A_t^{\text{clean}}\!\rightarrow\!P_t\!\rightarrow\!C_t$ path open. The posting-clean construction subtracts L2 posting transactions from both numerator and denominator when forming $A_t^{\text{clean}}$, so the treatment reflects end-user execution rather than sequencer posting burden and we avoid ``bad-control'' contamination of the total-effect estimand \citep{WangCrapisMoallemi2025Posting}.
+
+Operationally, the adjustment set $X_t = \{D_t^*, \mathbf{R}_t, \mathbf{Cal}_t, \mathbf{Shock}_t\}$ is built to support the identification assumptions listed below using three design choices, backed by diagnostics in the methodology appendix. First, the latent-demand factor uses only off-chain proxies so that mediator pathways (such as L2 posting) are excluded by construction. Second, deterministic regime and calendar structure capture discontinuities from protocol upgrades and recurring seasonality, preventing them from contaminating $A_t^{\text{clean}}$. Third, targeted shock dummies isolate large day-specific shocks (NFT mega-mints, macro turmoil, sequencer outages) that would otherwise spill into both treatment and outcomes. With these controls active, the remaining identifying variation is slow-moving adoption intensity that is plausibly less contaminated by concurrent demand shocks, conditional on $X_t$.
+
+\paragraph{Identification assumptions.} These design choices are intended to make the following assumptions plausible:
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Conditional exchangeability:} Sequential ignorability holds once we condition on $X_t$; the covariate definitions and targeted-event coverage tables in the measurement appendix document how each covariate maps to the back-door paths in Figure~\ref{fig:dag}.
+    \item \textbf{Positivity within regimes:} Treatment-support diagnostics (Appendix~\ref{sec:appendix:diagnostics_summary}) show wide support across the $[0,1]$ domain during London and Merge, but post-Dencun days concentrate in a 0.86--0.91 band. Minimum-detectable-effect calculations therefore label post-Dencun slope estimates as exploratory, consistent with Section~\ref{sec:results:regimes}.
+    \item \textbf{SUTVA / stable interventions:} The posting-clean construction keeps $A_t^{\text{clean}}$ within the $[0,1]$ simplex even when L2 posting volumes swell and defines a single aggregate adoption measure per day. Together with daily aggregation, this maintains a stable notion of the treatment (no hidden versions of $A_t^{\text{clean}}$) and limits cross-day interference, in line with the Stable Unit Treatment Value Assumption (SUTVA).
+\end{enumerate}
+
+\paragraph{Diagnostics summary.} Exchangeability is probed via placebo regressions of $A_t^{\text{clean}}$ on lagged outcomes and on leads of $D_t^*$; coefficients cluster near zero in the diagnostics archive. Positivity is reinforced by trimming pre-London outliers where $A_t^{\text{clean}} < 0.05$ and by flagging post-Dencun estimates as exploratory whenever coverage collapses. Stability is evaluated through split-sample tests that compare pre- and post-Merge coefficients; the absence of sign flips in the local-projection responses (Figure~\ref{fig:lp_irf}) suggests that the estimand retains meaning across hardware and software upgrades, though we continue to report regime-specific precision.
+
+
+\subsubsection{Relation to existing empirical work}
+Conceptually, our design complements upgrade-focused empirical analyses of the fee market such as \citet{LiuEtAl2022EIP1559}, who compare pre- and post-London behavior, and transaction-level rollup studies such as \citet{GogolEtAl2024L2Arbitrage}, who analyze arbitrage and fee dynamics within specific L2s. Upgrade-focused studies treat London or Dencun as discrete interventions and rely on event-study or regression-discontinuity-in-time designs anchored on those dates. In contrast, our question concerns how \emph{continuous} variation in aggregate L2 adoption affects L1 congestion across and within regimes, motivating an interrupted time-series design with a continuous treatment rather than a pure event-study/RDiT framework.
+
+\subsection{Main Estimators: ITS Levels and ECM}
+\label{sec:methods:estimators}
+
+We summarize the confirmatory estimators once here; derivations and additional estimator variants appear in the methodology appendix.
+
+\subsubsection{Long-run levels specification}
+\label{sec:methods:levels}
+
+The long-run benchmark is a levels ITS specification,
+\begin{equation}
+\log C^{fee}_t = \beta_0 + \beta_1 A_t^{clean} + \gamma D_t^* + \boldsymbol{\delta}'\mathbf{R}_t + \boldsymbol{\theta}'\mathbf{Cal}_t + \boldsymbol{\eta}'\mathbf{Shock}_t + \varepsilon_t,
+\label{eq:its_levels}
+\end{equation}
+where $\boldsymbol{\eta}$ stacks the targeted event controls and $\varepsilon_t$ may exhibit serial dependence. Here, $\beta_1$ captures the semi-elasticity of congestion with respect to adoption. Because $A_t^{clean}$ is scaled on $[0,1]$, a 1 percentage point increase corresponds to a 0.01 change in $A_t^{clean}$. We report effects for a 10 percentage point increase in adoption, computed as
+\begin{equation}
+\text{\% Change in Fees for 10pp} = 100 \times \left[\exp\!\left(0.10 \times \beta_1\right)-1\right].
+\label{eq:semi_elasticity}
+\end{equation}
+Reporting effects for a 10 percentage point change makes the magnitude directly comparable to typical movements in L2 market share.
+
+\subsubsection{Short-run dynamics via error--correction model}
+\label{sec:methods:ecm}
+
+We test for cointegration between $\log C^{fee}_t$ and $A_t^{clean}$ using Engle--Granger residual unit-root tests and Johansen rank tests (Appendix~\ref{sec:appendix:diagnostics_summary}). In both cases we reject the null of no cointegration over the pre-Dencun window (Section~\ref{sec:results:data_quality}), supporting the presence of a stable long-run relation. This motivates an Error--Correction Model (ECM) for short-run inference:
+\begin{equation}
+\Delta \log C^{fee}_t = \phi\,ECT_{t-1} + \psi\,\Delta A_t^{clean} + \kappa\,\Delta D_t^* + \boldsymbol{\lambda}'\Delta \mathbf{Cal}_t + \boldsymbol{\omega}'\Delta \mathbf{Shock}_t + \nu_t,
+\label{eq:ecm}
+\end{equation}
+where $ECT_{t-1}$ is the lagged residual from the long-run relation implied by Equation~\ref{eq:its_levels}. Here, $\psi$ is the instantaneous effect of $\Delta A_t^{clean}$ on the daily change in the log base fee, and $\phi<0$ is the speed at which fees adjust back to equilibrium. Estimation proceeds in three steps: (i) fit Equation~\ref{eq:its_levels} with HAC covariance to obtain the long-run residual, (ii) form $ECT_{t-1}$ by lagging that residual, and (iii) estimate Equation~\ref{eq:ecm} with HAC or feasible GLS while tracking residual diagnostics. The implied half-life $t_{1/2}=\ln(0.5)/\ln(1+\phi)$ summarizes how quickly fees revert after an adoption shock, and the same three-step procedure yields comparable 10pp semi-elasticities from $\psi$ across confirmatory outcomes. Confirmatory ECM inference uses the full 2021--2024 sample, with post-Dencun days flagged as a separate regime; after differencing and lagging this leaves $N=1{,}242$ daily observations, and the primary causal interpretation remains anchored to the pre-Dencun support. Throughout, the ECM reuses the same adjustment set $(D_t^*, \mathbf{R}_t, \mathbf{Cal}_t, \mathbf{Shock}_t)$ as the levels specification in Equation~\ref{eq:its_levels}, so that differences between long-run and short-run estimates reflect dynamics rather than changes in control variables. The confirmatory levels estimator is Prais--Winsten AR(1) FGLS (selected by the residual-dependence diagnostics); ARMA$(1,2)$ is retained solely as a diagnostic alternative.
+
+\subsubsection{Alternative dynamic specifications (robustness)}
+\label{sec:methods:robustness}
+
+For robustness, we also estimate distributed-lag, Koyck (geometric-lag), first-difference, and local-projection variants, detailed in the methodology appendix. These models share the same adjustment set and are used to check that the sign and magnitude of the adoption effect are not artifacts of the ECM specification. To provide additional evidence on persistence, we include a geometric-lag (Koyck) specification:
+\begin{equation}
+\log C^{fee}_t = \alpha + \rho \log C^{fee}_{t-1} + \beta_0 A_t^{clean} + \gamma D_t^* + \boldsymbol{\delta}'\mathbf{R}_t + \boldsymbol{\theta}'\mathbf{Cal}_t + \boldsymbol{\eta}'\mathbf{Shock}_t + u_t,
+\label{eq:koyck}
+\end{equation}
+where the long-run multiplier equals $\beta_0/(1-\rho)$ whenever $|\rho|<1$. Estimates from this specification are treated as supportive evidence on persistence rather than as primary causal effects; full derivations and diagnostic checks live in the methodology appendix.
+
+\paragraph{Regime-aware variants.} When sample support permits, we interact $A_t^{clean}$ with Merge and Dencun indicators to estimate differential slopes. Because post-Dencun adoption saturates the treatment domain, these interaction coefficients surface in Section~\ref{sec:results:regimes} but are labeled exploratory.
+
+\subsection{Controls, Regimes, and Inference}
+\label{sec:methods:design}
+\phantomsection\label{sec:method:events}
+
+The implementation details that support Equations~\ref{eq:its_levels}--\ref{eq:ecm} are summarized in three blocks; extended diagnostics remain in the methodology appendix.
+
+\paragraph{Adjustment set and targeted shocks (controls).} Our adjustment set combines the PCA-based latent demand factor ($D_t^*$), regime dummies ($\mathbf{R}_t$), calendar indicators ($\mathbf{Cal}_t$), and a curated set of targeted shock dummies $\mathbf{Shock}_t$ covering mega NFT mints, sequencer or mainnet outages, large airdrop claim days, and major market-stress episodes (Section~\ref{sec:data:controls}). This set is chosen to block the main back-door paths in Figure~\ref{fig:dag} while preserving the mediator path from adoption to posting to congestion. We retain an indicator for any sequencer or mainnet outage in both the long-run and short-run equations so that platform outages do not masquerade as treatment shocks; detailed coverage diagnostics are reported in Appendix~\ref{sec:appendix:diagnostics_summary}.
+
+\paragraph{Seasonality, regimes, and serial dependence.} Deterministic seasonality (weekends, month-ends, quarter turns) and Merge/Dencun regime indicators enter every specification to absorb systematic changes in fee levels and utilization unrelated to L2 adoption. We allow for serially correlated errors and compute heteroskedasticity- and autocorrelation-consistent (HAC) standard errors. In practice, the confirmatory levels run uses Prais--Winsten AR(1) FGLS; compact ARMA corrections are explored as diagnostics and reported alongside Ljung--Box and Breusch--Godfrey checks in the diagnostics appendix. Dynamic feedback is handled by including lagged outcomes when needed (e.g., Koyck, ECM) and by auditing residual autocorrelation in the diagnostics appendix. Kernel choices, bandwidth selection, and spline-based calendar robustness checks live in the diagnostics appendix. The confirmatory window spans the pre-Dencun London$\rightarrow$Merge period (Section~\ref{sec:data:window}); post-Dencun estimates are labeled exploratory because treatment support collapses after the 2024 blob upgrade, as shown in the treatment-support diagnostics in Appendix~\ref{sec:appendix:diagnostics_summary}.
+
+\paragraph{Timing, instruments, and outcome family.}\phantomsection\label{sec:methods:timing}\phantomsection\label{sec:methods:fdr} To guard against mechanical same-day co-movement between $A_t^{clean}$ and congestion, we also estimate Equation~\ref{eq:its_levels} with $A_{t-1}^{clean}$ on the right-hand side. When exogenous variation is available (sequencer outages or blob-cost changes), we deploy it in a shift--share IV using pre-Dencun chain weights and report weak-instrument-robust confidence intervals in the instrumentation appendix.
+
+The confirmatory outcomes are $\log C^{fee}_t$ and $\log S_t$; we apply Benjamini--Hochberg corrections at the 5\% level and report the corresponding $q$-values. Utilization and IV extensions are treated as exploratory and presented without multiple-testing adjustment.
+
+\subsection{Confirmatory vs.\ Exploratory Scope}
+\label{sec:methods:scope}
+
+We fix the main estimand (the 10pp semi-elasticity of $\log C^{fee}_t$ and $\log S_t$ with respect to $A_t^{clean}$), the adjustment set $(D_t^*, \mathbf{R}_t, \mathbf{Cal}_t, \mathbf{Shock}_t)$, the levels and ECM specifications in Equations~\ref{eq:its_levels}--\ref{eq:ecm}, and the confirmatory outcome family together with the Benjamini--Hochberg multiple-testing plan. Sections~\ref{sec:results:main}--\ref{sec:results:regimes} report these confirmatory estimates, including adjustment dynamics and regime heterogeneity, with Benjamini--Hochberg corrections applied across the outcome family. Section~\ref{sec:results:exploratory} and the appendices present exploratory diagnostics and post-Dencun extensions that reuse the same adjustment set but fall outside the confirmatory outcome family (e.g., utilization, IV variations, and BSTS counterfactuals).

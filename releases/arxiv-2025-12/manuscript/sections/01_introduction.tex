@@ -1,0 +1,29 @@
+% Section 1: Introduction
+
+Ethereum's fee market has traversed three structural regimes in rapid succession---London's EIP-1559 base-fee burn, the Merge's proof-of-stake transition, and Dencun's EIP-4844 blob space. Each upgrade reshaped how congestion costs are priced and burned but did not expand Layer-1 (L1) execution capacity. Bursts of NFT minting, stablecoin arbitrage, or L2 posting therefore still push median fees into the tens of Gwei and crowd out smaller users.
+
+Over the same period, optimistic and zero-knowledge Layer-2 (L2) rollups matured from pilots into production systems that regularly settle more than half of Ethereum's transactions. These rollups offload execution but also consume L1 blockspace when publishing compressed batches. This creates an open question: does aggregate L2 adoption relieve mainnet congestion or merely reshuffle it across users, time, and layers? We ask: when overall demand and protocol regime are held constant, does higher L2 user adoption reduce Ethereum mainnet congestion?
+
+Our main findings are straightforward. Over the London$\rightarrow$Merge window, a 10 percentage point increase in posting-clean L2 adoption is associated with about a 13\% reduction in median base fees. That corresponds to roughly 5~Gwei at pre-Dencun fee levels. An error-correction term implies an 11-day half-life back to the long-run relation between adoption, congestion, and demand. The fee relief is therefore meaningful but partial and short-run. Supporting metrics based on block utilization and a scarcity index show similar congestion relief. Blob-era slopes after Dencun are statistically imprecise because adoption is already near saturation, so we treat those estimates as exploratory.
+
+Existing work on Ethereum's fee market and rollups shows how individual upgrades and rollup designs affect incentives, price discovery, and posting costs. However, most studies focus on single events or descriptive dashboards rather than regime-spanning causal estimates. Empirical analyses of fee-market upgrades and rollup pricing quantify local changes in fees, waiting times, or cross-rollup spreads. They do not estimate the total effect of aggregate L2 adoption on mainnet congestion across the London$\rightarrow$Merge$\rightarrow$Dencun sequence or cleanly separate that effect from shared demand shocks.
+
+We address this gap by assembling a regime-aware daily panel of $N=1{,}245$ observations from August 5, 2021 through December 31, 2024 that spans the London, Merge, and post-Dencun eras. The panel links median base fees, block utilization, and a congestion scarcity index to a posting-clean measure of L2 user adoption and to a single demand factor summarizing ETH-market activity and stablecoin flows. Calendar and regime dummies plus targeted event indicators capture protocol shifts and discrete shocks. We estimate a regime-aware error-correction model and complementary time-series designs to map adoption shocks into short-run and medium-run congestion outcomes.
+
+The adoption measure counts end-user transactions on rollups and mainnet while excluding L2-to-L1 posting flows, so the adoption$\rightarrow$posting$\rightarrow$congestion channel remains part of the estimand. Together with the demand factor, this keeps the estimand focused on the total effect of user migration onto L2s without conditioning on mediator pathways. Section~\ref{sec:methodology} provides the full construction details and adjustment logic.
+
+\subsection{Contributions}
+\label{sec:intro:contributions}
+
+Our contributions are fourfold:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Cross-regime causal estimate.} We provide a regime-aware causal estimate of the total effect of L2 adoption on L1 fees spanning the London$\rightarrow$Merge$\rightarrow$Dencun sequence, rather than focusing on a single upgrade or contemporaneous correlations.
+    \item \textbf{Measurement design.} We introduce a posting-clean adoption measure and a demand factor that deliberately exclude mediator pathways, offering a reusable template for avoiding post-treatment conditioning in blockchain congestion studies.
+    \item \textbf{Policy translation.} We map semi-elasticities into Gwei and dollar savings for representative transactions and adoption scenarios, connecting econometric quantities to fee levels and cost savings that protocol designers and users directly observe.
+    \item \textbf{Template for monitoring.} We combine a regime-aware error-correction framework with a compact set of diagnostics into a monitoring toolkit that can be updated as new data arrive and ported to other rollup-centric ecosystems.
+\end{enumerate}
+
+\subsection{Roadmap}
+\label{sec:intro:roadmap}
+
+Section~\ref{sec:literature} situates this contribution relative to empirical studies of Ethereum's fee market, rollup design, and causal time-series methods, highlighting why existing work cannot recover the total effect of aggregate L2 adoption on mainnet congestion. Section~\ref{sec:data} describes the panel construction and variable definitions, and Section~\ref{sec:methodology} outlines the causal design and estimators. Section~\ref{sec:results} reports the empirical results, and Sections~\ref{sec:discussion}--\ref{sec:conclusion} discuss implications and conclude. Appendix~\ref{sec:availability} documents the data and code assets, and the replication repository carries the full reproducibility record.

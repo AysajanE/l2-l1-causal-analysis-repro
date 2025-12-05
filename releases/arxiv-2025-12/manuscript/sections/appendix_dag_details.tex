@@ -1,0 +1,131 @@
+\subsection{Extended DAG Details and Causal Pathways}
+\label{app:dag_details}
+
+\subsection{Detailed Node Descriptions}
+
+\begin{description}[leftmargin=2.5em,style=nextline]
+    \item[\textbf{$A_t$ --- Treatment (L2 Adoption)}]
+    The ecosystem-level share of transactions executed on Layer-2 rollups. The numerator aggregates daily transactions across seven tracked rollups (Arbitrum, Optimism, Base, zkSync, Starknet, Linea, Scroll) sourced from \texttt{mart\_l2\_daily}. The denominator uses L1 user transactions where posting transactions are identified via the L2 inbox registry \texttt{l2\_inbox\_registry} and excluded to prevent post-treatment contamination. Operationalized as \texttt{mart\_treatment\_daily.A\_t\_clean}.
+
+    \item[\textbf{$C_t$ --- Outcomes (L1 Congestion)}]
+    Three congestion indicators: (i) $\log C^{fee}_t$, the natural log of median base fee per gas in Wei (post-London only); (ii) $u_t \in [0,1.5]$, block-space utilization ratio; (iii) $S_t$, a harmonized scarcity index defined piecewise to enable regime-spanning analyses.
+
+    \item[\textbf{$D_t$ --- Ecosystem Demand (Latent Common Cause)}]
+    An unobserved time-varying driver representing macro sentiment, capital inflows, and application-layer activity. Induces confounding via $A_t \leftarrow D_t \rightarrow C_t$. Proxied using principal component analysis of standardized, non-mechanical demand indicators.
+
+    \item[\textbf{$P_t$ --- L2 Posting Load (Mediator)}]
+    The volume of data Layer-2 rollups post back to Ethereum for settlement, measured as calldata gas consumption pre-Dencun and blob gas usage post-Dencun. Lies on the mediation path $A_t \rightarrow P_t \rightarrow C_t$.
+
+    \item[\textbf{$U_t$, $E_t$, $C_{t-1}$}]
+    Protocol regimes (London, Merge, Dencun), macro price/sentiment drivers, and lagged congestion feedback, respectively.
+\end{description}
+
+\subsection{Detailed Causal Pathways}
+
+The DAG encodes the following structural relationships:
+
+\begin{itemize}[leftmargin=*,itemsep=3pt]
+    \item $E_t \rightarrow D_t$: Macro price movements drive ecosystem-wide demand.
+    \item $D_t \rightarrow A_t$ and $D_t \rightarrow C_t$: Common-cause confounding through demand.
+    \item $U_t \rightarrow A_t$ and $U_t \rightarrow C_t$: Protocol upgrades jointly affect adoption incentives and fee mechanics.
+    \item $A_t \rightarrow C_t$: Direct relief channel---L2 adoption reduces L1 demand.
+    \item $A_t \rightarrow P_t \rightarrow C_t$: Posting give-back channel (mediation).
+    \item $C_{t-1} \rightarrow A_t$ and $C_{t-1} \rightarrow C_t$: Dynamic feedback and serial persistence.
+\end{itemize}
+
+Calendar effects are modeled as deterministic exogenous seasonality that induces no confounding when explicitly controlled.
+
+\subsection{Extended Identification Assumptions and Diagnostics}
+\label{app:assumptions}
+
+\subsection{Detailed Assumptions}
+
+\textbf{A1. Unconfoundedness:} Conditional on $X_t = \{D^*_t, U_t, \text{Calendar}_t\}$, treatment assignment is independent of potential outcomes. This selection-on-observables assumption requires that all confounding is blocked by observed or proxied regressors.
+
+\textbf{A2. Positivity:} For all covariate values and adoption levels in the empirical support, there is positive probability mass at each treatment intensity, preventing extrapolation to regions with no empirical support. Our sample shows $A_t$ varying continuously from near-zero to 0.92 across all regime combinations.
+
+\textbf{A3. SUTVA:} The potential outcome for day $t$ depends only on $A_t$ and $X_t$, not on adoption levels in other periods beyond that captured by dynamics and trend controls. At daily aggregation, spillovers across non-adjacent days are assumed negligible conditional on controls.
+
+\textbf{A4. Functional Form:} The conditional expectation is either linear in $A_t$ or adequately captured by flexible state-space components such that misspecification bias does not overturn substantive conclusions.
+
+\textbf{A5. Measurement Validity:} The demand factor validly proxies latent demand; treatment is accurately measured from blockchain data; regime indicators are precisely dated and exogenous.
+
+\subsection{Threats to Validity}
+
+Key threats to unconfoundedness include:
+\begin{itemize}[leftmargin=*]
+    \item Omitted ecosystem shocks not absorbed by $D^*_t$ or event dummies
+    \item Incomplete capture of demand variation by the PCA proxy
+    \item Anticipation effects before major L2 events
+\end{itemize}
+
+\subsection{Diagnostic Tests}
+
+\begin{enumerate}[label=\textbf{T\arabic*}]
+    \item \textbf{Pre-trend falsification:} Event-study lead coefficients test for spurious pre-treatment trends.
+    \item \textbf{Placebo interventions:} Random pseudo-treatment dates should yield null effects.
+    \item \textbf{Protocol-boundary validation:} RDiT checks alignment with known regime mechanics.
+    \item \textbf{Demand-factor robustness:} Drop-one PCA and alternative aggregations.
+    \item \textbf{Serial-dependence diagnostics:} ACF/PACF plots and lagged-outcome sensitivity.
+    \item \textbf{Mediator-exclusion verification:} Programmatic audit of specifications.
+\end{enumerate}
+
+\subsection{Operationalization Tables and Data Sources}
+\label{app:operationalization}
+
+\subsection{Mapping DAG Nodes to BigQuery Tables}
+
+\begin{table}[htbp]
+\centering
+\caption{Operationalization of DAG Nodes in BigQuery Tables}
+\label{tab:dag_operationalization}
+\begin{tabular}{@{}llp{6.2cm}l@{}}
+\toprule
+\textbf{Node} & \textbf{Concept} & \textbf{Measurement} & \textbf{Primary Source} \\
+\midrule
+$A_t$   & L2 adoption & L2 tx / (L1 user tx + L2 tx) & \texttt{mart\_treatment\_daily.A\_t\_clean} \\
+$C_t$   & L1 congestion & $\{\log C^{fee}_t, u_t, S_t\}$ & \texttt{stg\_l1\_blocks\_daily}, \texttt{mart\_master\_daily} \\
+$D_t$   & Ecosystem demand & PCA-PC1 of five proxies & \texttt{demand\_factor\_daily.D\_star} \\
+$U_t$   & Protocol regimes & Binary indicators & \texttt{mart\_master\_daily.regime\_*} \\
+$P_t$   & L2 posting & Calldata/blob gas & \texttt{*\_mediator\_daily}, \texttt{blob\_metrics\_daily} \\
+$E_t$   & Macro sentiment & Absorbed into $D^*_t$ & \texttt{controls\_eth\_returns\_daily} \\
+$C_{t-1}$ & Lagged congestion & Previous period outcomes & Constructed in analysis \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Critical Measurement Design Features}
+
+Three essential design choices ensure identification validity:
+
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Clean treatment construction:} Excludes L2 posting transactions from the denominator to avoid mediator contamination. The ``raw'' adoption share would mechanically condition on part of $P_t$, inducing post-treatment bias.
+
+    \item \textbf{Demand factor free of bad controls:} All five PCA components are off-chain or ecosystem-wide proxies containing zero L1/L2 transaction counts: CEX volume (not DEX), Google Trends (not on-chain gas), stablecoin issuance (not DeFi TVL).
+
+    \item \textbf{Regime-aware outcome harmonization:} The scarcity index $S_t$ maintains comparability across structural breaks by using $\log(\text{base fee})$ post-London and $\log(\text{effective gas price} \times u_t)$ pre-London.
+\end{enumerate}
+
+\subsection{External Validity and Scope}
+\label{app:scope}
+
+\subsection{Scope of Inference}
+
+Our estimates recover the average total effect over 2021--2024 under selection-on-observables identification. These are local average treatment effects (LATEs) over the empirical distribution of $(A_t, X_t)$. Extrapolation to:
+\begin{itemize}
+    \item Adoption levels beyond the observed range ($A_t > 0.92$)
+    \item Post-2024 regimes with structurally altered L2 economics
+    \item Other blockchain ecosystems
+\end{itemize}
+requires additional assumptions beyond this study's scope.
+
+\subsection{Why Total Effects Only}
+
+Decomposition into natural direct and indirect effects would require:
+\begin{enumerate}
+    \item Joint modeling of $A_t \rightarrow P_t$ and $P_t \rightarrow C_t$ stages
+    \item Sequential ignorability assumptions
+    \item Careful handling of regime-dependent mediation (calldata vs. blobs)
+\end{enumerate}
+
+We maintain focus on the policy-relevant total effect to avoid conflating estimands.

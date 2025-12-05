@@ -1,0 +1,398 @@
+% ============================================================================
+% APPENDIX B--G AGGREGATOR
+% ============================================================================
+
+\section{Statistical Diagnostics and Design Checks}
+\label{sec:appendix:methodology}\label{sec:appendix:diagnostics}
+\subsection{Diagnostics and Design Checks}
+\label{sec:appendix:diagnostics_summary}
+This appendix reports the diagnostics that justify the ECM/ITS design: integration order, cointegration, residual dependence, treatment support, power, and multiple-outcome control. Tables and plots are reproduced here so readers can audit identification and precision directly in the PDF; code logs remain in the replication bundle for reruns.
+
+\noindent\textbf{Notation used across appendix tables:} $A^{clean}_t$ denotes the posting-clean adoption share; EG $p$ is the Engle--Granger residual-unit-root test $p$-value; LB $p@10$ is the Ljung--Box $p$-value at lag 10; ``10pp'' indicates a 10 percentage point change in $A^{clean}_t$.
+
+\subsubsection*{Stationarity, Cointegration, and Error Processes}
+
+Table~\ref{tab:unit_root} reproduces the unit-root evidence for the pre-Dencun confirmatory window. ADF tests on levels fail to reject a unit root for $A^{clean}_t$, $\log C^{fee}_t$, $u_t$, $S_t$, and $D_t^*$, and KPSS points to non-stationarity; Phillips--Perron tests are more mixed, rejecting a unit root for several level series. All first differences are stationary across ADF, KPSS, and PP, so we continue to treat these variables as $I(1)$ in the confirmatory design. A Phillips--Perron Engle--Granger residual test on the long-run relation $\log C^{fee}_t \sim A^{clean}_t + D_t^* + \mathbf{R}_t + \mathbf{Cal}_t$ rejects non-stationarity ($p=1.6\times 10^{-5}$), supporting the ECM formulation used in the confirmatory analysis. Figure~\ref{fig:acf_pacf} shows the residual ACF/PACF for both the levels and ECM equations; the Prais--Winsten AR(1) FGLS fit is the confirmatory specification, while the ARMA$(1,2)$ alternative materially shrinks short-lag autocorrelation in the diagnostic grid even though Ljung--Box tests still reject at large $N$.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Unit-Root and Cointegration Diagnostics (Pre-Dencun Window: London+Merge)}
+\label{tab:unit_root}
+\begin{tabular}{lcccccc}
+\toprule
+Series & Transform & ADF stat ($p$) & KPSS stat ($p$) & PP stat ($p$) & $I(d)$ \\
+\midrule
+$A^{clean}_t$ & level & -1.43 (0.85) & 0.52 (0.01) & -4.92 (0.0003) & $I(1)$ \\
+$\log C^{fee}_t$ & level & -1.95 (0.63) & 0.63 (0.01) & -4.92 (0.0003) & $I(1)$ \\
+$u_t$ & level & -1.12 (0.93) & 0.51 (0.01) & -39.57 ($<0.001$) & $I(1)$ \\
+$S_t$ & level & -1.95 (0.63) & 0.63 (0.01) & -4.92 (0.0003) & $I(1)$ \\
+$D^{*}_t$ & level & -2.98 (0.14) & 0.42 (0.01) & -17.79 ($<0.001$) & $I(1)$ \\
+$\Delta A^{clean}_t$ & first diff & -10.26 ($<0.001$) & 0.09 (0.10) & -50.30 ($<0.001$) & $I(0)$ \\
+$\Delta \log C^{fee}_t$ & first diff & -7.47 ($<0.001$) & 0.18 (0.10) & -35.56 ($<0.001$) & $I(0)$ \\
+$\Delta u_t$ & first diff & -7.09 ($<0.001$) & 0.34 (0.10) & -547.78 ($<0.001$) & $I(0)$ \\
+$\Delta S_t$ & first diff & -7.47 ($<0.001$) & 0.18 (0.10) & -35.56 ($<0.001$) & $I(0)$ \\
+$\Delta D^{*}_t$ & first diff & -10.07 ($<0.001$) & 0.29 (0.10) & -68.47 ($<0.001$) & $I(0)$ \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{0.95\textwidth}
+\footnotesize\textit{Note:} Levels tests include a deterministic trend; first-difference tests include an intercept. KPSS uses the trend-stationary null with automatic lags. Engle--Granger residual Phillips--Perron test on $\log C^{fee}_t \sim A^{clean}_t + D_t^* + \mathbf{R}_t + \mathbf{Cal}_t$ rejects a unit root ($p=1.6\times 10^{-5}$), validating the error-correction setup. All statistics computed on the 2021-08-05 to 2024-03-12 pre-Dencun window ($N=951$).
+\end{minipage}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/appendix_acf_pacf.pdf}
+\caption{Residual ACF/PACF for Levels and ECM Equations}
+\label{fig:acf_pacf}
+\begin{minipage}{0.95\textwidth}
+\footnotesize\textit{Note:} Panels plot ACF and PACF up to lag 24 for (i) the levels specification with OLS residuals and (ii) the ECM error-correction residuals. The ARMA$(1,2)$ choice reduces the maximum absolute ACF from 0.93 to 0.15 over lags 1--10, even though Ljung--Box tests still reject at large $N$. See Appendix~\ref{sec:availability} for replication scripts.
+\end{minipage}
+\end{figure}
+
+\begin{table}[!htbp]\centering\small
+\caption{Residual Dependence Diagnostics (Levels; ARMA Grid as Diagnostic)}
+\label{tab:resid_arma_levels}
+\begin{tabular}{lrrrrrrr}\toprule
+Specification & $\hat{\beta}$ & SE & DW & LB p@10 & $\max|\rho_{1-10}|$ & AIC & N \\ 
+\midrule
+OLS-HAC (levels) & 0.1057 & 0.5524 & 0.148 & $<10^{-6}$ & 0.926 & -- & 1244 \\ 
+ARMA(1,2) errors & -1.1610 & 0.2599 & 1.980 & $2.3\times 10^{-7}$ & 0.148 & -51.03 & 1244 \\ 
+\bottomrule\end{tabular}
+\begin{minipage}{\textwidth}\small
+\textit{Note:} The confirmatory levels estimate reported in the main text uses Prais--Winsten AR(1) FGLS; ARMA$(1,2)$ appears here solely as the best-AIC diagnostic alternative. DW moves close to 2 under ARMA$(1,2)$ errors. Ljung--Box still rejects at lag 10 given large $N$, but the maximum residual ACF over lags 1--10 drops from 0.93 to 0.15, providing a robustness check while keeping the confirmatory specification unchanged. HAC (Bartlett, 10 lags) standard errors reported for the OLS line.
+\end{minipage}
+\end{table}
+
+\subsubsection*{Positivity, Support, and Effective Sample Size}
+
+Positivity within regimes is a binding constraint on post-Dencun inference. Table~\ref{tab:i1_spline} summarizes a spline specification that allows the semi-elasticity to vary across low- and high-adoption regions, while Table~\ref{tab:i1_mde} reports the implied minimum detectable effects (MDEs).
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Piecewise Semi-Elasticities for Log Base Fee (Knot at 0.80)}
+\label{tab:i1_spline}
+\begin{tabular}{lrrlrl}
+\toprule
+Regime Support & $\hat{\beta}$ & SE (HAC) & 95\% CI & Semi-elasticity (10pp) & Semi-elasticity CI \\
+\midrule
+$A^{clean}_t \leq 0.80$ & 0.1401 & 0.4912 & [-0.823, 1.103] & 1.41\% & [-7.90\%, 11.66\%] \\
+$A^{clean}_t > 0.80$ & -1.0338 & 4.2000 & [-9.266, 7.198] & -9.82\% & [-60.41\%, 105.41\%] \\
+\bottomrule
+\end{tabular}
+\vspace{-0.5ex}
+\begin{flushright}\footnotesize\textcolor{gray}{Artifacts: see Appendix~\ref{sec:availability} for data and code paths.}\end{flushright}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Minimum Detectable Effect (MDE) by Regime with Effective Sample Size}
+\label{tab:i1_mde}
+\begin{tabular}{lrrrlrrr}
+\toprule
+Regime & N & $N_{\text{eff}}$ & $\mathrm{sd}(A^{clean}_t)$ & Max Adoption Range & HAC SE & MDE (beta units) & MDE (10pp \%) \\
+\midrule
+post-Dencun & 294 & 47.48 & 0.0210 & [0.760, 0.951] & 4.37 & 12.23 & 239.90 \\
+pre-Dencun & 950 & 147.43 & 0.3016 & [0.000, 0.923] & 0.47 & 1.31 & 14.01 \\
+\bottomrule
+\end{tabular}
+\vspace{-0.5ex}
+\begin{flushright}\footnotesize\textcolor{gray}{Artifacts: see Appendix~\ref{sec:availability} for data and code paths.}\end{flushright}
+\end{table}
+
+\section{Estimator Details and Extensions}
+\label{sec:appendix:estimators}
+\subsection{Estimator Details and Variants}
+\label{sec:appendix:estimators_compact}
+This appendix lists the specifications, timing variants, and robustness checks that sit behind Section~\ref{sec:methodology}. Full derivations and code live in the replication bundle; the tables here provide the audit trail needed to interpret the reported estimates.
+
+\subsubsection*{ITS and ECM Workflow}
+
+The main text reports a merged set of ITS and ECM coefficients in Table~\ref{tab:c2_ecm}. Here we highlight how alternative demand-factor constructions affect the short-run semi-elasticity. Table~\ref{tab:i2_demand_factor} reports a small grid of ECM runs using ``lite'' and ``full'' demand-factor definitions and same-day vs.\ lagged timing.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Demand Factor Variants and Timing Diagnostics}
+\label{tab:i2_demand_factor}
+\begin{tabular}{lcccccc}
+\toprule
+Demand factor & $\psi$ (10pp) & SE & $p$-value & EG $p$ & Adj.~$R^2$ & $N$ \\
+\midrule
+$D^{\star}$-lite (same-day) & -1.067 & (0.362) & 0.003 & 0.004 & 0.336 & 1241 \\
+$D^{\star}$-full (same-day) & -1.379 & (0.368) & 0.000 & 0.005 & 0.322 & 1241 \\
+$D^{\star}$-lite (t-1) & -0.857 & (0.418) & 0.040 & 0.005 & 0.162 & 1240 \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{0.92\textwidth}
+\vspace{0.3em}\footnotesize\textit{Note:} $\psi$ is the ECM short-run semi-elasticity for a 10pp change in adoption. All specifications include the confirmatory adjustment set and use HAC (Bartlett) standard errors. Sample sizes are one day smaller than the main ECM in Table~\ref{tab:c2_ecm} ($N=1{,}242$) because rebuilding $D^{\star}_t$ with the ``lite''/``full'' inputs shortens the overlapping input window by a single day; the $t\!-\!1$ variant drops one additional day due to the lag on $D^{\star}_{t-1}$. Engle--Granger $p$-values test residual unit roots and confirm cointegration across variants, supporting the robustness claims in Section~\ref{sec:results:main}.
+\end{minipage}
+\end{table}
+
+\subsubsection*{Targeted Dummies and Event Adjustments}
+
+Targeted-event controls absorb days where congestion and adoption are jointly affected by large structural shocks. The curated catalog, rationale, and window flags are reported in Appendix~\ref{sec:appendix:shock_catalog} (Table~\ref{tab:targeted_events}); this subsection retains only the specification logic used in the ITS/ECM regressions. We include the pooled outage indicator and the full $\mathbf{Shock}_t$ vector in both the long-run and short-run equations so that sequencer/mainnet outages and mega-claim days do not masquerade as adoption shocks.
+
+\subsubsection*{Robustness Catalog}
+
+The tornado plot, placebo treatments, and alternative outcome runs are part of the robustness replication assets referenced in Appendix~\ref{sec:availability}. Each CSV contains metadata (seed, bandwidth, estimator) so that the checks can be re-run without consulting this appendix. The main text cites these diagnostics as exploratory support; the confirmatory interpretation continues to lean on the ECM and ITS specifications documented above.
+
+\section{Results Extensions}
+\label{sec:appendix:exploratory_extensions}
+\subsection{Exploratory Diagnostics and Policy Context}
+This appendix adds event-study views, regression-discontinuity-in-time (RDiT) snapshots, and a robustness ``tornado'' summary that sit alongside the main results in Section~\ref{sec:results}. The goal is to show how the ITS/ECM estimates behave around sharp protocol events and under alternative design choices for audiences focused on governance and fee-market policy.
+
+\subsubsection*{Event-Study Diagnostics and RDiT Snapshots}
+
+Event-study plots align L2 adoption shocks and congestion outcomes around key protocol and L2 events (e.g., London, Merge, Dencun, major rollup launches). They mainly serve as visual diagnostics: pre-trend checks, anticipation effects, and short-run overshooting. Because pre-trend F-tests reject parallel trends for several events, we treat the event-study coefficients as exploratory and focus on whether the post-event patterns qualitatively match the ITS/ECM estimates (fee relief following L2 adoption surges).
+
+RDiT snapshots at the Merge and Dencun boundaries complement the event studies by estimating local level shifts in log fees. These designs naturally highlight mechanical changes in the base-fee process and blob pricing, which are distinct from the smooth treatment variation exploited by the main ITS/ECM specification. As a result, we keep RDiT estimates in the exploratory category and use them to bound the magnitude of congestion relief that hard-fork-style interventions can deliver relative to the continuous L2 adoption channel.
+
+\subsubsection*{Robustness ``Tornado'' Summary}
+
+The robustness tornado aggregates a grid of alternative specifications---different HAC lag choices, alternative demand-factor constructions, and variations in calendar and regime controls---and visualizes how the semi-elasticity estimates move across this design space. The central message is that the sign and broad magnitude of the short-run semi-elasticity are stable across reasonable alternatives, with only extreme specifications (e.g., dropping demand controls entirely) pushing estimates toward zero. Full tornado CSVs and plots are part of the replication assets referenced in Appendix~\ref{sec:availability}.
+
+\section{Instrumentation and Timing Diagnostics}
+\label{sec:appendix:instrumentation}
+\subsection{Instrumentation and Timing Diagnostics}
+\label{sec:appendix:instrumentation_compact}
+This appendix records the core instrumental-variable diagnostics that support the weak-instrument caveats in Sections~\ref{sec:discuss:limitations} and~\ref{sec:conclusion}.
+
+\subsubsection*{Shift-Share IV Design}
+
+The primary shift-share instrument aggregates sequencer outages, fee-rebate programs, and exchange listings into a proxy for exogenous variation in L2 adoption. The design object is
+\[
+Z_t \;=\; \sum_{l\in\mathcal{L2}} w_l^{\text{pre}} \cdot \text{shock}_{l,t},
+\]
+where $w_l^{\text{pre}}$ is the pre-Dencun average share of end-user transactions on chain $l$ (Arbitrum 0.63, Optimism 0.27, Base 0.10) and $\text{shock}_{l,t}$ is an outage/listing/rebate indicator or outage-hours intensity. Construction steps are scripted in the replication bundle referenced in Appendix~\ref{sec:availability} (IV analysis scripts and configuration files). Table~\ref{tab:ss_first_stage} documents first-stage strength for the pooled-outage and shift--share variants; Table~\ref{tab:c1_timing_iv} retains the timing and over-identification diagnostics used in the discussion.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Instrument Variants and First-Stage Strength (Adoption on $Z_t$)}
+\label{tab:ss_first_stage}
+\begin{tabular}{lrrrrr}
+\toprule
+Instrument variant & Coef on $Z_t$ & HAC SE & First-stage $F$ & Partial $R^2$ & $N$ \\
+\midrule
+Pooled outage indicator ($\mathbb{1}\{\text{any outage}\}$) & 0.084 & 0.058 & 2.10 & 0.0017 & 1244 \\
+Shift--share outage (indicator) & 0.146 & 0.128 & 1.30 & 0.0010 & 1244 \\
+Shift--share outage (hours) & 0.024 & 0.047 & 0.25 & 0.0002 & 1244 \\
+Fee-rebate/listing shocks & 0.000 & 0.000 & 0.00 & 0.0000 & 1244 \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{0.92\textwidth}
+\vspace{0.3em}\footnotesize\textit{Note:} HAC (Bartlett, 7 lags) standard errors. Weights $w_l^{\text{pre}}$ are computed from pre-Dencun chain shares; no fee-rebate or exchange-listing shocks occur in the confirmatory window, so that row records zeros explicitly. Coefficients are in adoption-share units; $F$ and partial $R^2$ use the residualized first stage with regime and calendar controls.
+\end{minipage}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Timing and IV Checks for the Adoption Instrument}
+\label{tab:c1_timing_iv}
+\begin{tabular}{lrrrrrrrlrrr}
+\toprule
+Specification & $\hat{\beta}$ & SE & $p$-value & Semi-elasticity (10pp) & $N$ & First-stage $F$ & Partial $R^2$ & Instruments & J-stat & J-$p$ & J-df \\
+\midrule
+OLS-HAC ($A^{clean}_t$) & 0.1384 & 0.5713 & 0.8087 & 1.39\% & 1244 & -- & -- & -- & -- & -- & -- \\
+OLS-HAC ($A^{clean}_{t-1}$) & 0.3133 & 0.5850 & 0.5924 & 3.18\% & 1243 & -- & -- & -- & -- & -- & -- \\
+IV 2SLS & -0.6942 & 3.9681 & 0.8612 & -6.71\% & 1244 & 7.58 & 0.0061 & any\_outage\_t (pooled) & -- & -- & 0 \\
+Control-function & -0.6942 & 1.9614 & 0.7235 & -6.71\% & 1244 & 7.58 & 0.0061 & any\_outage\_t (pooled) & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{0.92\textwidth}
+\vspace{0.3em}\footnotesize\textit{Note:} The first-stage $F$-statistic (7.58) and partial $R^2$ indicate weak instrument strength by conventional standards, motivating the cautious language around simultaneity in Sections~\ref{sec:discuss:limitations} and~\ref{sec:conclusion}. J-statistics are not reported for single-instrument specifications. Additional AR tests and reduced-form grids are documented in the IV replication assets referenced in Appendix~\ref{sec:availability}.
+\end{minipage}
+\end{table}
+
+Table~\ref{tab:ss_iv} complements these diagnostics by reporting second-stage estimates for the shift--share outage variants that correspond to the first-stage metrics in Table~\ref{tab:ss_first_stage}.
+
+\begin{table}[!htbp]\centering\small
+\caption{Shift--Share IV for $A^{clean}_t$ Using Pre-Dencun Weights and Outages}
+\label{tab:ss_iv}
+\begin{tabular}{lcccccc}\toprule
+Specification & $\hat{\beta}$ & (SE) & $p$-value & $N$ & Partial $R^2$ & First-stage $F$ \\ 
+\midrule
+2SLS (SS any) & -2.476 & (7.506) & 0.742 & 1245 & 0.0022 & 2.76 \\ 
+2SLS (SS hours) & -6.029 & (18.198) & 0.740 & 1245 & 0.0005 & 0.56 \\ 
+\bottomrule\end{tabular}
+\begin{minipage}{0.95\textwidth}\vspace{0.3em}\footnotesize\textit{Note:} $Z_t^{SS}=\sum_l w_l^{\text{pre}}\cdot \mathbb{1}\{\text{outage}_{l,t}\}$ uses pre-Dencun end-user shares (Arbitrum 0.63, Optimism 0.27, Base 0.10). An intensity variant replaces the indicator with outage hours. Outcome is $\log C^{fee}$; controls: $D^*$, regime dummies, calendar, and linear trends with regime interactions. HAC standard errors (Bartlett, 7 lags).
+\end{minipage}
+\end{table}
+
+\subsubsection*{Timing Tests and Diagnostics Archive}
+
+Lead/lag timing tests confirm that instrument shocks do not predict pre-treatment outcomes at economically meaningful magnitudes, supporting the exclusion restriction in the narrow window used. AR tests, Anderson--Rubin intervals, and reduced-form grids are exported as `.tex/.csv` files alongside the scripts in \texttt{results/iv/}; this appendix focuses on the summary diagnostics most relevant for policy interpretation.
+
+\section{BSTS Welfare Bridge and Policy Context}
+\label{sec:appendix:bsts}
+\subsection{BSTS Welfare Bridge}
+\label{sec:appendix:bsts_summary}
+This appendix summarizes the Bayesian Structural Time Series (BSTS) analysis underlying Figure~\ref{fig:bsts}. The implementation is scripted in \texttt{src/analysis/bsts\_policy\_bridge.R}; the text here records the design choices and the welfare-sensitivity table that informs the policy discussion.
+
+\subsubsection*{Design Summary}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Window:} Merge-era (2023-10-28 to 2024-03-12) with blob-era days excluded, so that treatment variation aligns with the pre-Dencun confirmatory window.
+    \item \textbf{Inputs:} Log base fee, posting-clean adoption, ETH price, and the PCA demand factor $D_t^*$; priors and sampler settings are logged in \texttt{results/bsts/config.yml}.
+    \item \textbf{Outputs:} Welfare quantiles, price-sensitivity tables, and posterior predictive checks saved as CSV/LaTeX files under \texttt{results/bsts/}.
+\end{itemize}
+
+\subsubsection*{Welfare Mapping}
+
+BSTS produces a counterfactual fee path $\text{BF}^{cf}_t$ under low L2 adoption. Per-day dollar savings are computed as
+\begin{equation}
+\label{eq:welfare_mapping}
+\text{USD}_t = \big(\text{BF}^{obs}_t - \text{BF}^{cf}_t + \mathbf{1}_{\text{tip}}\cdot \text{TIP}^{obs}_t\big)\times \text{GAS}_t \times 10^{-9} \times P_t,
+\end{equation}
+where $\text{BF}^{obs}_t$ is the observed base fee, $\mathbf{1}_{\text{tip}}=1$ when the Base+Tip welfare column is used (and $0$ otherwise), $\text{TIP}^{obs}_t$ is the median priority tip, $\text{GAS}_t$ is total gas used, and $P_t$ is either the daily mean or close ETH/USD price. Aggregate welfare is $\sum_t \text{USD}_t$ over the Merge-era window; baseline adoption percentiles (p05 vs.\ p25) anchor the counterfactual $A^{clean}_t$ series.
+
+\subsubsection*{Welfare Sensitivity}
+
+Anchoring the counterfactual on the pre-Dencun ECM semi-elasticity, the BSTS bridge maps a 10 percentage point increase in posting-clean adoption into aggregate fee savings that are robust across price baselines. A normal-approximation over the daily posterior draws yields:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Mean-price base only:} median \$79.6M; 50\% CI [\$74.0M, \$85.3M]; 90\% CI [\$65.8M, \$93.2M].
+    \item \textbf{Mean-price base+tip:} median \$92.2M; 50\% CI [\$85.8M, \$98.8M]; 90\% CI [\$76.3M, \$107.9M].
+    \item \textbf{Close-price variants:} medians \$79.9M (base) and \$92.6M (base+tip) with comparable intervals (50\% CIs [\$74.3M, \$85.6M] and [\$86.1M, \$99.1M]).
+\end{itemize}
+Most savings accrue on high-congestion days rather than in quiet periods. Table~\ref{tab:welfare_sensitivity_2x2} reports the scenario grid that underpins the exploratory policy range; replication scripts export the full posterior draws for alternative price/adoption baselines.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Two-by-Two Welfare Sensitivity (Baseline Percentile $\times$ Price Weighting)}
+\label{tab:welfare_sensitivity_2x2}
+\begin{tabular}{lcc}
+\toprule
+Baseline (Adoption) & Mean Price (Base / Base+Tip, $M$) & Close Price (Base / Base+Tip, $M$) \\
+\midrule
+p05 (71.6\%) & 149.8 / 173.6 & 150.4 / 174.2 \\
+p25 (74.6\%) & 78.1 / 90.5 & 78.4 / 90.8 \\
+\bottomrule
+\end{tabular}
+\vspace{-0.5ex}
+\begin{flushright}\footnotesize\textcolor{gray}{Artifacts: see Appendix~\ref{sec:availability} for data and code paths.}\end{flushright}
+\end{table}
+
+The full counterfactual bundle is available via \texttt{make bsts}. Posterior predictive checks and alternative-prior panels are stored in the repository; the PDF retains only the tables needed to interpret the policy bridge.
+
+\section{Measurement and Operationalization}
+\label{sec:appendix:measurement_overview}
+\subsection{Scope and Conventions}
+\label{sec:appendix:measurement_summary}
+This appendix makes the measurement layer self-contained, mirroring the data-dictionary style in \citet{LiuEtAl2022EIP1559}. All variables are daily UTC aggregates; symbols match those in Sections~\ref{sec:data} and~\ref{sec:methodology}. Code pointers refer to tables/files in the replication bundle (Appendix~\ref{sec:availability}).
+
+\subsection{Variable Dictionary}
+\label{sec:appendix:measurement_dictionary}
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Variable Dictionary and Construction Summary}
+\label{tab:measurement_dictionary}
+\begin{tabular}{p{0.12\textwidth}p{0.19\textwidth}p{0.09\textwidth}p{0.30\textwidth}p{0.15\textwidth}p{0.15\textwidth}}
+\toprule
+Symbol & Name & Unit & Construction (daily) & Source(s) & Code pointer \\
+\midrule
+$A^{clean}_t$ & Posting-clean L2 adoption share & share $[0,1]$ & L2 end-user tx / (L2 end-user tx + L1 user tx); L2$\rightarrow$L1 posting tx identified via inbox registry and removed from both numerator and denominator & Rollup traces; Ethereum execution traces & \codepath{mart\_treatment\_daily.A\_t\_clean} \\
+$\log C^{fee}_t$ & Log median base fee & $\log(\text{Gwei})$ & $\log(\mathrm{median}_{b\in t}\ \text{base fee}_b)$ from EIP-1559 base-fee field; post-London only & Ethereum block traces; public fee dashboards & \codepath{mart\_master\_daily.log\_basefee} \\
+$u_t$ & Block utilization & ratio $[0,1.5]$ & $\mathrm{median}_{b\in t}\left(\tfrac{\text{gas used}_b}{\text{gas limit}_b}\right)$ & Ethereum block traces & \codepath{mart\_master\_daily.utilization} \\
+$S_t$ & Scarcity index & log fee units & $\log\!\Big(\tfrac{\text{base fee}_t + \text{tip}_t + \mathbf{1}_{t\geq\text{Dencun}}\text{blob fee}_t}{\tilde{q}_t}\Big)$, where $\tilde{q}_t$ is the 7-day Tukey-smoothed execution-demand benchmark & Execution + blob fee data; gas usage & \codepath{mart\_master\_daily.scarcity\_index} \\
+$D^{*}_t$ & Latent demand factor & z-score & PC1 of standardized ETH log returns, CEX log volumes, realized volatility, Google Trends, and net stablecoin issuance (fit on pre-Dencun window; sign oriented so higher demand increases congestion) & Binance/OKX/Coinbase; Google Trends; issuer feeds & \codepath{demand\_factor\_daily.D\_star} \\
+$\mathbf{R}_t$ & Regime dummies & binary & London, Merge, and post-Dencun indicators & Protocol calendar & \codepath{mart\_master\_daily.regime\_*} \\
+$\mathbf{Cal}_t$ & Calendar dummies & binary & UTC weekend, month-end, quarter-turn indicators & Calendar & \codepath{mart\_master\_daily.calendar\_*} \\
+$\mathbf{Shock}_t$ & Targeted events & binary & Event flags for airdrops, sequencer outages, mega NFT mints, market-stress days; catalog in Table~\ref{tab:targeted_events} & Curated event list & \codepath{controls\_shock\_daily.*} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Treatment Construction: Posting-Clean Adoption}
+\label{sec:appendix:treatment_construction}
+\begin{enumerate}[leftmargin=*]
+    \item Pull daily L2 transaction counts by chain from \codepath{mart\_l2\_daily} and L1 user transactions from \codepath{stg\_l1\_blocks\_daily}.
+    \item Identify L2$\rightarrow$L1 posting transactions via the rollup inbox registry (\codepath{l2\_inbox\_registry}); tag them in both datasets.
+    \item Remove tagged posting transactions from the L2 numerator and the L1 denominator so that the treatment reflects end-user execution, not settlement load.
+    \item Aggregate remaining L2 user transactions across tracked rollups (Arbitrum, Optimism, Base, zkSync, Starknet, Linea, Scroll) and compute $A^{clean}_t$ on the daily UTC grid.
+    \item Winsorize $A^{clean}_t$ at the 0.5\% tails and carry the resulting share into all confirmatory and exploratory designs.
+\end{enumerate}
+
+\subsection{Outcome Definitions and Units}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Base fee ($\log C^{fee}_t$).} Natural log of the median EIP-1559 base fee (Gwei) across blocks in day $t$.
+    \item \textbf{Utilization ($u_t$).} Median block-level gas-used-to-gas-limit ratio per day, retaining the post-Merge 1.5 cap.
+    \item \textbf{Scarcity index ($S_t$).} Combines execution gas and data-availability fees: daily median base fee + priority tip + (post-Dencun) blob base fee, divided by a 7-day smoothed demand benchmark $\tilde{q}_t$ (median gas used smoothed with a Tukey-Hanning window) and logged. This keeps scarcity comparable across London, Merge, and blob eras.
+\end{itemize}
+
+\subsection{Demand Factor $D^{*}_t$}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Inputs:} (i) ETH/USD log returns; (ii) log centralized-exchange spot volume (Binance, Coinbase, OKX aggregate); (iii) realized volatility from 5-minute returns; (iv) Google Trends ``ethereum'' index; (v) net stablecoin issuance (USDC + USDT + DAI).
+    \item \textbf{Standardization and window:} Each series is z-scored using its mean and standard deviation over the London$\rightarrow$Merge window (2021-08-05 to 2024-03-12) to avoid blob-era structural breaks; single-day gaps are forward-filled before standardization.
+    \item \textbf{PCA fit:} Principal components are estimated on the pre-Dencun standardized matrix; PC1 is rescaled to unit variance and sign-flipped so that higher $D^{*}_t$ aligns with higher fees.
+    \item \textbf{Usage:} The same $D^{*}_t$ enters ITS, ECM, IV, and BSTS designs; sensitivity checks with ``lite'' inputs appear in Table~\ref{tab:i2_demand_factor}.
+\end{itemize}
+
+\subsection{Quality Control and Harmonization}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Time and aggregation.} All variables use UTC calendar days; block-level quantities are aggregated with medians to limit outlier influence.
+    \item \textbf{Winsorization.} $A^{clean}_t$, $\log C^{fee}_t$, $u_t$, and $S_t$ are winsorized at the 0.5\% tails across the full sample ($N=1{,}245$) before entering regressions.
+    \item \textbf{Missingness.} Days with missing treatment or base-fee fields ($<0.3\%$) are dropped listwise; PCA inputs with single-day gaps are forward-filled prior to z-scoring.
+    \item \textbf{Smoothing choices.} The scarcity benchmark $\tilde{q}_t$ uses a 7-day Tukey-Hanning window; BSTS price baselines use daily mean and close prices as noted in Appendix~\ref{sec:appendix:bsts_summary}.
+\end{itemize}
+
+\subsection{Targeted Shock Catalog}
+\label{sec:appendix:shock_catalog}
+\begin{small}
+\begin{longtable}{p{0.10\textwidth} >{\raggedright\arraybackslash\seqsplit}p{0.21\textwidth} p{0.12\textwidth} p{0.12\textwidth} p{0.08\textwidth} >{\raggedright\arraybackslash}p{0.27\textwidth}}
+\caption{Targeted Shock Catalog with Usage Flags}\label{tab:targeted_events}\\
+\toprule
+Category & Event & Date (UTC) & Used in confirmatory window? & Duration & Rationale \\
+\midrule
+\endfirsthead
+\multicolumn{6}{l}{\footnotesize\textit{Table~\ref{tab:targeted_events} (continued)}}\\
+\toprule
+Category & Event & Date (UTC) & Used in confirmatory window? & Duration & Rationale \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\footnotesize\textit{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\multicolumn{6}{l}{\textit{Pre-Dencun (used in confirmatory window unless noted)}}\\
+Protocol & London EIP-1559 & 2021-08-05 & Y & 1d & Fee-mechanism activation; sets baseline regime dummy. \\
+Launch & Arbitrum One mainnet & 2021-09-01 & Y & 1d & Major L2 launch; sudden user migration. \\
+Airdrop & dYdX airdrop & 2021-09-08 & Y & 1d & Large claim day; spikes L2+L1 usage. \\
+Launch & Polygon Hermez v1 & 2021-03-01 & N & 1d & Pre-sample launch noted for completeness. \\
+Airdrop & Immutable X airdrop & 2021-11-05 & Y & 1d & NFT airdrop; gas spike. \\
+Launch & Starknet Alpha mainnet & 2021-11-16 & Y & 1d & Early Starknet deployment. \\
+Launch & Optimism public mainnet & 2021-12-16 & Y & 1d & Public rollout; user onboarding burst. \\
+Airdrop & Optimism airdrop 1 & 2022-05-31 & Y & 1d & First OP distribution; heavy claim traffic. \\
+Upgrade & Arbitrum Nitro upgrade & 2022-08-31 & Y & 1d & Sequencer upgrade; throughput jump. \\
+Protocol & Ethereum Merge & 2022-09-15 & Y & 1d & Consensus shift; volatility control. \\
+Airdrop & Optimism airdrop 2 & 2023-02-09 & Y & 1d & Second OP claim event. \\
+Airdrop & Arbitrum airdrop & 2023-03-23 & Y & 1d & ARB token claim; gas surge. \\
+Launch & zkSync Era mainnet & 2023-03-24 & Y & 1d & zkSync Era launch. \\
+Launch & Polygon zkEVM mainnet & 2023-03-27 & Y & 1d & Polygon zkEVM debut. \\
+Upgrade & Optimism Bedrock upgrade & 2023-06-06 & Y & 1d & Bedrock migration; temporary pause/resume. \\
+Launch & Linea mainnet & 2023-07-11 & Y & 1d & Linea mainnet go-live. \\
+Launch & Mantle mainnet & 2023-07-17 & Y & 1d & Mantle mainnet go-live. \\
+Campaign & Base Onchain Summer & 2023-08-09 & Y & 7d & Promo campaign; NFT mint surge. \\
+Launch & Base mainnet & 2023-08-09 & Y & 1d & Base public launch. \\
+Airdrop & Optimism airdrop 3 & 2023-09-18 & Y & 1d & Third OP claim wave. \\
+Launch & Scroll mainnet & 2023-10-17 & Y & 1d & Scroll mainnet launch. \\
+Campaign & Starknet STRK token launch & 2024-02-14 & Y & 1d & Token announcement; claim anticipation. \\
+Airdrop & Optimism airdrop 4 & 2024-02-15 & Y & 1d & Fourth OP claim day. \\
+Protocol & Dencun EIP-4844 & 2024-03-13 & N & 1d & Blob activation; start of exploratory blob era. \\
+\midrule
+\multicolumn{6}{l}{\textit{Post-Dencun (used in exploratory sensitivity only)}}\\
+Airdrop & zkSync airdrop & 2024-06-17 & N & 1d & Large airdrop during blob era. \\
+Upgrade & Polygon MATIC-to-POL transition & 2024-09-04 & N & 1d & Token transition; potential bridge congestion. \\
+Campaign & Starknet staking launch & 2024-11-26 & N & 1d & Staking launch; sequencer load risk. \\
+\end{longtable}
+\end{small}
+\vspace{-0.5em}
+\begin{minipage}{0.95\textwidth}
+\footnotesize\textit{Note:} Column~4 flags inclusion in the confirmatory London$\rightarrow$Dencun window; post-Dencun events are retained for exploratory robustness only. Duration records the anchor day used in regressions (multi-day campaigns are coded with a single start-day dummy). Rationale summarizes why the event could jointly shift adoption and congestion.
+\end{minipage}

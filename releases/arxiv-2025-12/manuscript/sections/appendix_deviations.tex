@@ -1,0 +1,22 @@
+\subsection{Preregistration Deviations (Summary)}
+\label{sec:appendix:deviations_summary}
+\label{sec:appendix:deviations}
+\label{sec:appendix:H}
+Deviations relative to the preregistered protocol (OSF DOI above) are distilled below. Detailed rationale tables are maintained in the public replication repository.
+
+\paragraph{Major deviations.}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Analysis window:} Confirmatory claims restricted to London$\rightarrow$Merge (951 days) instead of the full post-London period because post-Dencun treatment support collapsed. Exploratory welfare estimates (BSTS) cover only the 137-day Merge-era subwindow.
+    \item \textbf{Specification form:} Levels ITS with Prais--Winsten AR(1) replaced the preregistered first-difference baseline, while the ECM subsumes both. Semi-elasticities remained within 1.5 log points across specs.
+    \item \textbf{Error treatment:} Fixed 21-lag HAC + AR(1) corrections superseded the auto-selected HAC rule to eliminate residual autocorrelation.
+    \item \textbf{Reproducibility:} Added dataset/code hash freezes and the arXiv tarball so future readers can reproduce the exact build.
+\end{itemize}
+
+\paragraph{Minor deviations.}
+\begin{itemize}[leftmargin=*]
+    \item Reduced PCA inputs to the three strongest proxies (returns, CEX volume, Google Trends) while documenting the variance explained.
+    \item Added exploratory BSTS welfare and RDiT/event-study diagnostics for policy context, clearly labeled as exploratory.
+    \item Adjusted event-study window to [-30,+30] days with [-30,-8] reference once the launch calendar was finalized.
+\end{itemize}
+
+These summaries, plus the cross-reference map in Section~\ref{sec:results}, fulfill the transparency requirement without reprinting full tables. A living deviation ledger in the replication repository remains the single source of truth.

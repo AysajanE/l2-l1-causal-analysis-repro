@@ -1,0 +1,82 @@
+% Section 5: Discussion
+
+\begin{quote}
+\textbf{Key takeaways (confirmatory window: London$\rightarrow$Merge).} (i) An increase of 10 percentage points (pp) in posting-clean L2 adoption is associated with $\approx$13\% lower median L1 base fees (about 5~Gwei for a 21k transfer at the window mean). (ii) The response is front-loaded: most adjustment occurs within roughly 2--3 weeks. Beyond about one month uncertainty dominates. (iii) Post-Dencun inference is descriptive because support collapses and regime mechanics change. We do not make causal claims for the blob era.
+\end{quote}
+
+\subsection{Policy Interpretation}
+\label{sec:discuss:interpretation}
+
+\noindent We organize the implications into three questions: what the estimate means (and does not), how to use it as a planning curve, and why the mapping weakens in the blob era.
+
+\begin{tcolorbox}[colback=gray!6,colframe=gray!35,boxrule=0.35mm,arc=0mm,left=2mm,right=2mm,top=1mm,bottom=1mm]
+\small
+\textbf{Policy mapping (Section~6 cheat sheet).}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Effect size:} 10pp $\rightarrow$ $\approx$13\% lower median L1 base fee.
+    \item \textbf{Timing:} half-life $\approx$11 days; usable horizon $\approx$1 month.
+    \item \textbf{Scope:} London$\rightarrow$Merge confirmatory window.
+    \item \textbf{Post-Dencun status:} descriptive/underpowered until new exogenous variation appears.
+\end{itemize}
+\end{tcolorbox}
+
+\subsubsection{What the estimate means (and does not)}
+In the London$\rightarrow$Merge confirmatory window, a 10pp increase in posting-clean L2 adoption lowers median L1 base fees by about 13\% (roughly 5.2~Gwei or \$0.14 for a 21k-gas transfer at the window mean). The adjustment closes half the gap to equilibrium in approximately 11 days. Posting-clean adoption counts end-user execution routed to rollups while netting out sequencer posting traffic \citep{WangCrapisMoallemi2025Posting}. The estimand therefore captures users leaving L1 execution rather than shifting posting burden. The statement covers median EIP-1559 base fees in that regime. It does not, by itself, pin down tips, total user cost, or blob-era dynamics.
+
+Mechanistically, pre-Dencun fee relief comes from fewer users competing for L1 execution gas. When end-user transactions migrate to rollups and sequencer posting is netted out, EIP-1559 demand falls and the base fee declines. After EIP-4844, L2 data availability migrates to blobs that are priced separately from execution gas \citep{eip4844}. Additional L2 growth can lower calldata pressure yet leave execution-layer congestion—and therefore the base fee—largely unchanged.
+
+To avoid over-reading the estimate, it is \textit{not} a claim about:
+\begin{itemize}[leftmargin=*]
+    \item total user cost (base fee $\neq$ base+tip $\neq$ L2 fees);
+    \item welfare net of subsidies (the welfare bridge remains exploratory);
+    \item blob-era causal effects (support and the mechanism change);
+    \item distributional incidence (median base fee $\neq$ tail events);
+    \item long-run equilibrium beyond roughly one month given widening uncertainty bands.
+\end{itemize}
+
+\subsubsection{How to use it as a planning curve}
+Sequencer teams and ecosystem treasuries can treat the ECM semi-elasticity as a planning curve. Let $\psi=0.13$ denote the estimated effect of a 10pp change in posting-clean adoption. If an intervention raises adoption by $\Delta A$ pp for $T$ days, the expected change in the median base fee is $\psi\cdot(\Delta A/10)$ over that horizon, with roughly half the adjustment arriving in 11 days and most within one month (Figure~\ref{fig:lp_irf}).
+
+A break-even rule replaces assertion with calculation: subsidy spend $\leq$ (predicted per-transaction base-fee savings $\times$ affected L1 transaction count). At the window mean, the per-transaction base-fee reduction is about \$0.14, scaled by $(\Delta A/10)$. Pushing L2 share from 60\% to 80\% (a 20pp move) would therefore be expected to trim median fees by about 24\%. Campaigns launched when adoption already sits above 85\% may still be operationally valuable, but the variance of the effect and the confidence bands widen, making causal evaluation harder. This reframes congestion management as a portfolio decision over L2 market share rather than a binary ``turn on/off'' switch.
+
+\subsubsection{Regime caveat: Dencun changes the mapping}
+EIP-4844 routes L2 data availability to blobs and prices it separately from execution gas.
+Additional L2 adoption can ease calldata pressure.
+It may not meaningfully reduce L1 execution congestion because the EIP-1559 base fee remains tied to execution demand \citep{LiuEtAl2022EIP1559}.
+Post-Dencun days also cluster in a narrow 0.86--0.91 adoption band.
+The effective sample size collapses.
+Table~\ref{tab:regime_heterogeneity} and the diagnostics appendix therefore label blob-era slopes as underpowered.
+The post-Dencun estimates in this paper are descriptive signals for monitoring, not confirmatory causal updates.
+They remain descriptive until quasi-experimental variation appears (e.g., blob-parameter changes or exogenous sequencer outages).
+
+\subsection{Limitations and Boundary Conditions}
+\label{sec:discuss:limitations}
+
+Threats to validity fall into five buckets:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Internal validity (simultaneity / weak instrument).} Timing diagnostics summarized in the instrumentation appendix show that lagged adoption has the expected sign but low precision. The control-function first stage ($F=7.58$) falls short of conventional strength, so we emphasize local identification around the pre-Dencun adoption support rather than claiming full exogeneity.
+    \item \textbf{Dynamics and horizon.} The Koyck parameter ($\rho\approx0.89$) and the widening LP bands documented in the diagnostics appendix indicate that any rebound beyond 56 days is statistically indistinguishable from zero. Welfare projections longer than about a month remain exploratory.
+    \item \textbf{Regime validity (post-Dencun).} Regime-split estimates in Table~\ref{tab:regime_heterogeneity} combined with the MDE calculations show that even a 45\% semi-elasticity would be indistinguishable from noise in the blob era. Because blobs price data separately from execution gas, the structural channel linking adoption to the base fee also weakens. We therefore restrict confirmatory claims to the pre-Dencun window.
+    \item \textbf{Measurement validity.} Posting-clean adoption is constructed by netting sequencer posting from end-user execution. Misclassification, coverage gaps for newer rollups, or relabeling by data providers could introduce level shifts that affect both the instrument and outcome series until detected.
+    \item \textbf{External validity.} The semi-elasticity may differ across application mixes (DeFi vs NFT vs stablecoin flows) and could be muted if lower fees induce rebound demand. Extrapolating to other EIP-1559 chains requires similar L2 penetration, fee-market mechanics, and monitoring of distributional incidence.
+\end{itemize}
+
+In practice, these threats encourage a division of labor between engineering experimentation and econometric evaluation. Short-run fee relief and within-regime comparisons can be evaluated with the present ECM and ITS toolkit, provided posting-clean labels are periodically audited for measurement drift. New instruments should avoid introducing additional simultaneity. Longer-run welfare or cross-regime counterfactuals will likely require new sources of quasi-experimental variation. Promising candidates include exogenous outages, parametric changes to blob markets, or natural experiments in sequencer fee rebates. External validity concerns also motivate segmenting outcomes by application mix before extrapolating to other chains. A replication log records these boundary conditions. Future updates—whether from Ethereum or other EIP-1559 chains—can extend the window for causal inference without revising the core identification strategy.
+
+\noindent Taken together, residual simultaneity, short-horizon precision limits, regime shifts, and measurement/external scope boundaries delimit where our core causal claims apply. They highlight the need for fresh instruments, monitoring of classification, and longer panels.
+
+\subsection{Open Questions and Monitoring Playbook}
+\label{sec:discuss:open}
+\label{sec:discuss:monitoring}
+
+Replication artifacts are in Appendix~\ref{sec:availability}; the replication repository carries the full audit log and change history.
+
+The remaining agenda for L2--L1 congestion research is best framed as concrete, monitorable questions rather than meta-guidance:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Post-Dencun identification.} What quasi-experimental shocks create exogenous adoption variation now that blobs absorb most L2 data? Candidates include blob fee parameter changes (e.g., target gas adjustments in \citealp{eip4844}), sequencer outages, and forced migrations during prover or bridge upgrades. A running changelog of these events—timestamped and paired with posting-clean adoption—keeps the ECM/ITS designs re-estimable the moment variation appears.
+    \item \textbf{Mechanism split (blobs vs execution gas).} Does higher L2 adoption still relieve \emph{execution} congestion, or only calldata/DA pressure? Monitoring should separate blob pricing from execution-layer base fees. It should also track how sequencer pricing rules respond, leveraging the posting–pricing interaction modeled by \citet{WangCrapisMoallemi2025Posting}.
+    \item \textbf{Heterogeneity and incidence.} Which user segments capture the fee relief—DeFi vs NFT vs stablecoin flows? How does it differ for latency-sensitive traders versus routine transfers? Segmenting L2 inflows, bridge mix, and cross-rollup price gaps (cf. \citealp{GogolEtAl2024L2Arbitrage}) would reveal whether congestion relief accrues to whales, retail users, or MEV searchers.
+    \item \textbf{Early-warning monitoring.} At what thresholds does the confirmatory design lose power (e.g., adoption sustained above 80--90\%) and require fresh instruments? A lightweight playbook is three steps. (i) Maintain daily dashboards for posting-clean adoption, blob utilization, and sequencer incidents. (ii) Rerun the ECM each time a shock hits or the adoption distribution shifts. (iii) Archive the resulting IRFs and diagnostics alongside the replication bundle so the evidence base compounds across upgrades.
+\end{enumerate}
+
+\noindent These questions turn Section~\ref{sec:results} into a live monitoring blueprint. Instead of restating transparency logistics, they specify what new variation to watch for, how to split mechanisms, and which distributional outcomes determine who benefits from the congestion relief.

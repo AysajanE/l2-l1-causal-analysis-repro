@@ -1,0 +1,32 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{float}
+
+\begin{document}
+
+\section*{Figure Numbering and Tornado Baseline Check}
+
+This mini-document includes the key figures to visually confirm: (i) labels say ``L2 Transaction Share,'' (ii) no in-graphic ``Figure N:'' prefixes, and (iii) the robustness tornado uses the confirmatory baseline (-1.194).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/eda_regime_overview.pdf}
+\caption{Regime-Aware Time Series Overview (check axis labels and no embedded figure number)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/eda_treatment_support.pdf}
+\caption{Treatment Support and Positivity (check y/x labels use ``L2 Transaction Share (A\_t\_clean)'')}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/sensitivity_tornado.pdf}
+\caption{Robustness Tornado (dashed baseline line should encode -1.194)}
+\end{figure}
+
+\end{document}
