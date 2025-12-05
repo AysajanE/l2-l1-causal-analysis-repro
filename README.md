@@ -25,8 +25,8 @@ bash scripts/fetch_raw_data.sh
 
 ## Data availability
 - Concept DOI (all versions): 10.5281/zenodo.17665906
-- Latest released data bundle: v1.0.2 (10.5281/zenodo.17665980) — raw blocks/tx, Dune/Nansen bundles, BSTS model objects, `core_panel_v1.parquet`.
-- Forthcoming arXiv bundle: v1.1.0-arxiv (will be minted from this repo tag; reuses the same core panel, adds arXiv LaTeX sources).
+- Latest version (arXiv bundle): v1.1.1-arxiv — 10.5281/zenodo.17832785 (includes the arXiv LaTeX bundle and the shipped core panel; points to the heavy assets below).
+- Prior data-heavy bundle: v1.0.2 — 10.5281/zenodo.17665980 (raw blocks/tx, Dune/Nansen bundles, BSTS model objects, `core_panel_v1.parquet`).
 - See `docs/DATA_AVAILABILITY.md` for the full inclusion/exclusion plan.
 
 ## Citation
