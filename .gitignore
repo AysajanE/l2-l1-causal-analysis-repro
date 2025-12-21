@@ -24,3 +24,10 @@ dist/
 *.parquet.zip
 *.tar.gz
 *.zip~
+
+# Internal release-manager artifacts (keep private)
+releases/arxiv-2025-12/manuscript/release_artifacts/*.md
+releases/arxiv-2025-12/manuscript/APPENDIX_FIGURES_COMPLETION_REPORT.md
+releases/arxiv-2025-12/manuscript/CITATION_VALIDATION_REPORT.md
+releases/arxiv-2025-12/manuscript/CRITICAL_ISSUE_RESOLUTION_REPORT.md
+releases/arxiv-2025-12/manuscript/MANUSCRIPT_STATUS.md
