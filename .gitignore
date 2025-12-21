@@ -34,3 +34,7 @@ releases/arxiv-2025-12/manuscript/MANUSCRIPT_STATUS.md
 releases/arxiv-2025-12/manuscript/check_calibrated_claims.sh
 releases/arxiv-2025-12/manuscript/forbidden_phrases.txt
 releases/arxiv-2025-12/manuscript/phase1_build_report.txt
+
+# Internal QA / release-gate artifacts (keep private)
+results/qa/
+results/figures/PHASE*.md
