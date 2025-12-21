@@ -19,6 +19,9 @@ dist/
 *.lof
 *.out
 *.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 
 # Large/raw not meant for git (fetched via scripts)
 *.parquet.zip
@@ -41,3 +44,6 @@ results/figures/PHASE*.md
 
 # Generated provenance/logs (may contain local paths)
 data/metadata/provenance_log.md
+
+# Local LaTeX build output (kept out of git)
+releases/arxiv-2025-12/manuscript/main.pdf
