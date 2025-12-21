@@ -35,9 +35,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Project root
-PROJECT_ROOT = Path("/Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/"
-                   "Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/"
-                   "L1-L2-causal-influence-analysis/l2-l1-causal-impact")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 class GasWeightedPriorityFeeCalculator:

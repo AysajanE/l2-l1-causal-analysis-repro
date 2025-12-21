@@ -6,6 +6,7 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import numpy as np
+from pathlib import Path
 from datetime import datetime, timedelta
 
 
@@ -69,11 +70,8 @@ def load_core_panel_v1():
     pd.DataFrame
         Core panel dataframe with all columns properly typed
     """
-    import os
-
-    # Define the path
-    base_path = "/Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/wt/analysis-py"
-    file_path = os.path.join(base_path, "data/core_panel_v1/core_panel_v1.parquet")
+    repo_root = Path(__file__).resolve().parents[2]
+    file_path = repo_root / "data/core_panel_v1/core_panel_v1.parquet"
 
     # Load the data
     df = load_parquet_with_date_handling(file_path)

@@ -5,7 +5,7 @@ import pandas as pd
 import pyarrow.parquet as pq
 from pathlib import Path
 
-work_dir = Path("/Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/wt/analysis-r")
+work_dir = Path(__file__).resolve().parents[2]
 
 # Load converted panel
 panel_path = work_dir / "data/core_panel_v1/core_panel_v1_converted.parquet"

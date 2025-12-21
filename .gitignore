@@ -38,3 +38,6 @@ releases/arxiv-2025-12/manuscript/phase1_build_report.txt
 # Internal QA / release-gate artifacts (keep private)
 results/qa/
 results/figures/PHASE*.md
+
+# Generated provenance/logs (may contain local paths)
+data/metadata/provenance_log.md

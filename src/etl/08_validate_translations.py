@@ -26,8 +26,8 @@ from utils.price_conversions import (
     wei_to_usd, calculate_transaction_cost_usd
 )
 
-# Set working directory
-WORK_DIR = Path("/Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/wt/analysis-r")
+# Default to repo root.
+WORK_DIR = Path(__file__).resolve().parents[2]
 
 
 def validate_unit_conversions() -> Dict[str, bool]:

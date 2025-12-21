@@ -17,8 +17,8 @@ import yaml
 import json
 from datetime import datetime
 
-# Set working directory
-WORK_DIR = Path("/Users/aeziz-local/Research/Projects-05-Ethereum Blockchain Economic Analysis/Causal Influence of L2 Scaling Solutions on Ethereum L1 Mainnet Congestion/L1-L2-causal-influence-analysis/wt/analysis-r")
+# Default to repo root.
+WORK_DIR = Path(__file__).resolve().parents[2]
 
 
 def load_all_results():
