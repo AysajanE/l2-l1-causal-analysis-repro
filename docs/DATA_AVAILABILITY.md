@@ -22,9 +22,9 @@ This document specifies what will be bundled in the public reproducibility packa
 - Key results and tables (all ≤~300 KB):  
   - `results/power/fig_power_post_dencun.{pdf,png}`, `table_i5_power_precision.{csv,tex}`  
   - `results/bsts` CSV/Parquet summary files (not the full model RDS)  
-  - `results/qa/*`, `results/its_diagnostics/*`, `results/figures/*`, `results/hourly/hourly_outcome_panel.csv`
+  - `results/its_diagnostics/*`, `results/figures/*`, `results/hourly/hourly_outcome_panel.csv`
 - Manuscript figures: `project_A_effects/manuscript/figures/*` (all sub-1 MB)
-- Metadata/config: `data/metadata/*`, `data/l2_events_registry.yaml`, `data/external/*.csv`
+- Metadata/config: `data/l2_events_registry.yaml`, `data/external/*.csv`
 
 ---
 
@@ -51,6 +51,7 @@ Use `scripts/fetch_raw_data.sh` as the entry point; it fetches and verifies hash
 ## Checksums and integrity
 - Small bundled artifacts keep their existing `.md5`/`.sha256` files in `data/core_panel_v1/`.  
 - For fetched assets, `scripts/fetch_raw_data.sh` validates SHA256 against values in the script; update the hashes if sources refresh, and bump the release tag.
+- Generated logs that can embed see-your-machine paths (e.g., provenance logs) are intentionally excluded from the public repo.
 
 ---
 

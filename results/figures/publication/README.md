@@ -247,8 +247,7 @@ When preparing figures for journal submission, verify:
 **Include with submission:**
 1. This README.md (document figure organization)
 2. `../captions.md` (consolidated captions)
-3. `../PHASE12_FIGURE_INVENTORY.md` (quality audit)
-4. Source scripts (optional, for reproducibility)
+3. Source scripts (optional, for reproducibility)
 
 ---
 
