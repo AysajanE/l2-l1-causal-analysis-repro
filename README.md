@@ -1,54 +1,73 @@
 # L1–L2 Causal Influence Analysis (Reproducibility Package)
 
-This repository contains the minimal, outlet-agnostic materials to reproduce the main results of the study on how Layer-2 scaling affects Ethereum Layer-1 congestion. Outlet-specific bundles are tracked via Git tags/releases.
+Public reproducibility package for a study of how Layer-2 adoption affects Ethereum Layer-1 congestion.
 
-## Outlet map
-- **arXiv (Dec 2025)**: tag `v1.1.0-arxiv` (candidate). Sources live in `releases/arxiv-2025-12/` (full LaTeX + figures) and reuse the shipped `data/core_panel_v1/` panel.
-- **Management Science submission (Oct 2025)**: tag `v1.0.2-ms` (existing). Shares the same data; manuscript itself is in the sister MS outlet repo.
+This repository is intentionally narrower than the full research workspace. It packages the minimum public materials needed to inspect the claims, reproduce released outputs, and trace versioned research bundles across outlets.
 
-## What’s included
-- Small derived datasets (core panel, processed master panels, gas-weighted fee summaries, ETH prices).
-- Key figures and result tables for the paper.
-- Fetch script wired to Zenodo v1.0.2 for heavier/raw assets.
-- Data and release documentation.
+## What this package contains
+
+- small derived datasets, including the shipped core panel and processed summaries
+- key figures and result tables
+- fetch scripts for heavier external bundles hosted on Zenodo
+- release, checksum, and data-availability documentation
+
+## Release map
+
+- **arXiv (Dec 2025)**: tag `v1.1.0-arxiv` (candidate). Sources live in `releases/arxiv-2025-12/` and reuse the shipped `data/core_panel_v1/` panel.
+- **Management Science submission (Oct 2025)**: tag `v1.0.2-ms`. Shares the same data backbone; manuscript lives in the sister outlet repo.
 
 ## Quick start
+
 ```bash
-# 1) Create environment (example; adjust as needed)
-conda env create -f environment.yml  # or: pip install -r requirements.txt
-
-# 2) Fetch raw/heavy inputs from Zenodo (with checksum verification)
+conda env create -f environment.yml
 bash scripts/fetch_raw_data.sh
+pytest -q tests/smoke
+```
 
-# 3) Run your analysis/figures pipeline (if provided) or inspect results in results/
+Or, if you prefer pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Reproducibility commands
+
+- `make env`: create or update the local environment
+- `make fetch`: download raw / heavy bundles from Zenodo with checksum verification
+- `make smoke`: run minimal validation on the shipped package
+- `make verify`: alias for the smoke validation flow
+- `make reproduce-arxiv`: validate the arXiv bundle
+- `make latex-arxiv`: compile the arXiv manuscript bundle when TeX is available
+
+Checksum verification can also be run directly:
+
+```bash
+python scripts/verify_checksums.py
 ```
 
 ## Data availability
-- Concept DOI (all versions): 10.5281/zenodo.17665906
-- Latest version (arXiv bundle): v1.1.1-arxiv — 10.5281/zenodo.17832785 (includes the arXiv LaTeX bundle and the shipped core panel; points to the heavy assets below).
-- Prior data-heavy bundle: v1.0.2 — 10.5281/zenodo.17665980 (raw blocks/tx, Dune/Nansen bundles, BSTS model objects, `core_panel_v1.parquet`).
-- See `docs/DATA_AVAILABILITY.md` for the full inclusion/exclusion plan.
+
+- Concept DOI (all versions): `10.5281/zenodo.17665906`
+- Latest arXiv bundle: `10.5281/zenodo.17832785`
+- Prior data-heavy bundle: `10.5281/zenodo.17665980`
+
+See `docs/DATA_AVAILABILITY.md` for the complete inclusion / exclusion plan.
+
+## Why this repo matters
+
+This package signals:
+
+- serious reproducibility discipline around empirical crypto research
+- clean separation between public package, heavier data bundles, and outlet-specific manuscript artifacts
+- versioned release management rather than one-off paper code dumps
 
 ## Citation
-If you use this package, please cite the concept DOI:
-```
+
+```text
 Aysajan Eziz. (2025). L1–L2 Causal Influence Analysis (Reproducibility Package). Zenodo. https://doi.org/10.5281/zenodo.17665906
 ```
 
 ## License
+
 - Code: MIT
-- Documentation & figures: CC BY 4.0
-
-## Run orchestration
-- `make env`   – create/update conda environment
-- `make fetch` – download raw/heavy bundles from Zenodo v1.0.2 (with checksums)
-- `make smoke` – run minimal smoke tests (core panel shape/columns and key result files)
-- `make verify` – same as smoke alias
-- `make reproduce-arxiv` – validate arXiv bundle (smoke tests + LaTeX presence)
-- `make latex-arxiv` – compile the arXiv manuscript from `releases/arxiv-2025-12/manuscript` (requires TeX toolchain)
-
-## Tests
-`pytest -q tests/smoke`
-
-## Checksum verification
-`python scripts/verify_checksums.py`
+- Documentation and figures: CC BY 4.0
